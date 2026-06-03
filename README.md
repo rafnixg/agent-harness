@@ -11,66 +11,74 @@ In this challenge, you'll build an AI coding agent similar to Claude Code or Cur
 
 # AI Coding Agent
 
-Un agente de IA que puede ejecutar tareas de programación usando herramientas (tools) como leer/escribir archivos y ejecutar comandos en terminal.
+Agente de IA que ejecuta tareas de programación de forma autónoma usando el patrón **tool-use**: el LLM razona, invoca herramientas (leer/escribir archivos, ejecutar comandos) y repite hasta completar la tarea.
 
-## Arquitectura
-
-El proyecto usa POO con las siguientes clases:
-
-- **`Tool`** (ABC): Clase base abstracta para definir herramientas
-- **`ToolRegistry`**: Registro para gestionar y ejecutar herramientas
-- **`Agent`**: Implementa el loop de conversación con el LLM
-
-### Tools disponibles
-
-| Tool | Descripción |
-|------|-------------|
-| `read_file` | Lee el contenido de un archivo |
-| `write_file` | Escribe contenido a un archivo |
-| `bash_terminal` | Ejecuta comandos en bash |
-
-## Uso
+## Inicio rápido
 
 ```bash
-./your_program.sh -p "tu prompt aquí"
-```
+# 1. Instalar dependencias
+python -m venv .venv && source .venv/Scripts/activate
+pip install -e ".[dev]"
 
-### Ejemplos
+# 2. Configurar API key
+export OPENROUTER_API_KEY="sk-or-..."
 
-```bash
-# Leer un archivo
-./your_program.sh -p "Lee el contenido de README.md"
-
-# Ejecutar comandos
-./your_program.sh -p "Lista los archivos en el directorio actual"
-
-# Tareas complejas
-./your_program.sh -p "Encuentra todos los archivos Python y cuenta las líneas de código"
+# 3. Ejecutar
+./your_program.sh -p "Lee README.md y resume su contenido"
 ```
 
 ## Configuración
 
-Variables de entorno:
-
-| Variable | Descripción | Default |
-|----------|-------------|---------|
-| `OPENROUTER_API_KEY` | API key de OpenRouter | (requerido) |
-| `OPENROUTER_BASE_URL` | URL base de la API | `https://openrouter.ai/api/v1` |
-| `OPENROUTER_MODEL` | Modelo a usar | `anthropic/claude-haiku-4.5` |
+| Variable | Default | Descripción |
+|---|---|---|
+| `OPENROUTER_API_KEY` | — | **Requerida**. API key de OpenRouter |
+| `OPENROUTER_BASE_URL` | `https://openrouter.ai/api/v1` | Endpoint compatible con OpenAI |
+| `OPENROUTER_MODEL` | `openrouter/free` | Modelo a usar |
+| `WORKSPACE_PATH` | `./workspace` | Directorio de trabajo del agente |
 
 ## Estructura del proyecto
 
 ```
 app/
-├── main.py      # Entry point
-├── agent.py     # Clase Agent (loop de conversación)
-├── tool.py      # Clases base Tool y ToolRegistry
-└── tools.py     # Implementaciones concretas de tools
+├── main.py                        # CLI entry point
+├── agent.py                       # AgentLoop — ciclo principal
+├── tool.py                        # Clases base Tool y ToolRegistry
+├── tools.py                       # read_file, write_file, bash_terminal
+└── providers/
+    ├── base.py                    # LLMProvider abstracto + retry logic
+    ├── openai_compat_provider.py  # Implementación OpenAI-compatible
+    └── registry.py                # ProviderSpec y registro
+docs/                              # Documentación detallada
+tests/                             # Suite de tests (173 tests)
 ```
 
-## Agregar un nuevo Tool
+## Tools disponibles
 
-1. Crear una clase que herede de `Tool` en `tools.py`
-2. Implementar las propiedades `name`, `description`, `parameters`
-3. Implementar el método `execute(**kwargs)`
-4. Registrar en `create_default_registry()`
+| Tool | Descripción |
+|---|---|
+| `read_file` | Lee el contenido de un archivo |
+| `write_file` | Escribe contenido a un archivo |
+| `bash_terminal` | Ejecuta un comando bash y devuelve stdout |
+
+## Tests
+
+```bash
+# Todos los tests (excluye live)
+python -m pytest tests/ -v
+
+# Con reporte de cobertura
+python -m pytest tests/ --cov=app --cov-report=term-missing
+
+# Tests live (requiere API key real)
+RUN_LIVE_TESTS=1 python -m pytest tests/ -m live
+```
+
+## Documentación
+
+| Documento | Contenido |
+|---|---|
+| [docs/introduccion.md](docs/introduccion.md) | Motivación, tecnologías y estructura del repositorio |
+| [docs/agent-loop.md](docs/agent-loop.md) | Ciclo de razonamiento, flujo de ejecución y diagramas |
+| [docs/providers.md](docs/providers.md) | Capa de proveedores LLM, retry logic y dataclasses |
+| [docs/tools-basicas.md](docs/tools-basicas.md) | Referencia de tools y cómo crear tools personalizados |
+| [docs/permisos.md](docs/permisos.md) | Variables de entorno, límites y consideraciones de seguridad |
