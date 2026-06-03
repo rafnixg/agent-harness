@@ -31,13 +31,11 @@ class AgentLoop:
 
         self.tools = ToolRegistry()
 
-        self._running = False
-
     def run(self, prompt: str) -> str:
         """Run the agent with a user prompt and return the final response."""
         self.messages = [{"role": "user", "content": prompt}]
 
-        while True:
+        for _iteration in range(self.max_iterations):
             response = self._chat()
 
             if not response.choices:
@@ -52,6 +50,8 @@ class AgentLoop:
 
             # Handle tool calls
             self._handle_tool_calls(message.tool_calls)
+
+        raise RuntimeError(f"max_iterations reached: {self.max_iterations}")
 
     def _chat(self):
         """Make a chat completion request."""
