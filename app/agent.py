@@ -3,26 +3,35 @@
 import json
 import sys
 
+from pathlib import Path
 from openai import OpenAI
 
 from app.tool import ToolRegistry
+from app.providers.base import LLMProvider
 
 
-class Agent:
+class AgentLoop:
     """AI Agent that can use tools to accomplish tasks."""
 
     def __init__(
         self,
-        client: OpenAI,
-        model: str,
-        tools: ToolRegistry,
+        llm_provider: LLMProvider,
+        workspace: Path,
+        model: str | None = None,
+        max_iterations: int = 40,
         max_tokens: int = 4000,
     ) -> None:
-        self.client = client
-        self.model = model
-        self.tools = tools
+        self.llm_provider = llm_provider
+        self.workspace = workspace
+        self.model = model or llm_provider.get_default_model()
         self.max_tokens = max_tokens
+        self.max_iterations = max_iterations
         self.messages: list = []
+        self._last_usage: dict[str, int] = {}
+
+        self.tools = ToolRegistry()
+
+        self._running = False
 
     def run(self, prompt: str) -> str:
         """Run the agent with a user prompt and return the final response."""
@@ -46,7 +55,7 @@ class Agent:
 
     def _chat(self):
         """Make a chat completion request."""
-        return self.client.chat.completions.create(
+        return self.llm_provider.chat.completions.create(
             model=self.model,
             messages=self.messages,  # type: ignore[arg-type]
             tools=self.tools.to_openai_schema(),  # type: ignore[arg-type]
@@ -68,10 +77,15 @@ class Agent:
             except (KeyError, FileNotFoundError, ValueError, OSError) as e:
                 result = f"Error: {e}"
 
-            print(f"Tool call: {name}({tool_call.function.arguments}) -> {result}", file=sys.stderr)
+            print(
+                f"Tool call: {name}({tool_call.function.arguments}) -> {result}",
+                file=sys.stderr,
+            )
 
-            self.messages.append({
-                "role": "tool",
-                "tool_call_id": tool_call.id,
-                "content": result,
-            })
+            self.messages.append(
+                {
+                    "role": "tool",
+                    "tool_call_id": tool_call.id,
+                    "content": result,
+                }
+            )
