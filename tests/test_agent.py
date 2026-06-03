@@ -227,3 +227,74 @@ class TestAgentLoopHandleToolCalls:
         with redirect_stderr(io.StringIO()):
             self.agent._handle_tool_calls([tc])
         assert self.agent.messages[0]["content"].startswith("Error:")
+
+
+# ---------------------------------------------------------------------------
+# AgentLoop.max_iterations
+# ---------------------------------------------------------------------------
+
+class TestAgentLoopMaxIterations:
+    def test_default_max_iterations_is_40(self):
+        agent = AgentLoop(llm_provider=MagicMock(), workspace=Path("/tmp"), model="m")
+        assert agent.max_iterations == 40
+
+    def test_custom_max_iterations_stored(self):
+        agent = AgentLoop(
+            llm_provider=MagicMock(), workspace=Path("/tmp"), model="m", max_iterations=5
+        )
+        assert agent.max_iterations == 5
+
+    def test_raises_runtime_error_when_limit_reached(self):
+        """Agent raises RuntimeError instead of looping forever."""
+        provider = MagicMock()
+        agent = AgentLoop(
+            llm_provider=provider,
+            workspace=Path("/tmp"),
+            model="m",
+            max_iterations=3,
+        )
+        agent.tools.register(_EchoTool())
+        tc = _make_tool_call("echo", {"text": "ping"})
+        # LLM always returns a tool call — never a final answer
+        provider.chat.completions.create.return_value = _make_response(tool_calls=[tc])
+
+        with pytest.raises(RuntimeError, match="max_iterations reached: 3"):
+            with redirect_stderr(io.StringIO()):
+                agent.run("loop forever")
+
+    def test_tool_called_exactly_max_iterations_times(self):
+        """The tool is executed once per iteration before the limit fires."""
+        provider = MagicMock()
+        agent = AgentLoop(
+            llm_provider=provider,
+            workspace=Path("/tmp"),
+            model="m",
+            max_iterations=4,
+        )
+        counter_tool = _EchoTool()
+        agent.tools.register(counter_tool)
+        tc = _make_tool_call("echo", {"text": "x"})
+        provider.chat.completions.create.return_value = _make_response(tool_calls=[tc])
+
+        with pytest.raises(RuntimeError):
+            with redirect_stderr(io.StringIO()):
+                agent.run("loop")
+
+        assert provider.chat.completions.create.call_count == 4
+
+    def test_error_message_includes_iteration_count(self):
+        provider = MagicMock()
+        agent = AgentLoop(
+            llm_provider=provider,
+            workspace=Path("/tmp"),
+            model="m",
+            max_iterations=7,
+        )
+        agent.tools.register(_EchoTool())
+        tc = _make_tool_call("echo", {"text": "x"})
+        provider.chat.completions.create.return_value = _make_response(tool_calls=[tc])
+
+        with pytest.raises(RuntimeError, match="7"):
+            with redirect_stderr(io.StringIO()):
+                agent.run("loop")
+

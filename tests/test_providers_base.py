@@ -1,5 +1,9 @@
 """Tests for providers/base.py data classes and static helpers (secondary)."""
 
+from collections import deque
+from typing import Any
+from unittest.mock import AsyncMock, patch
+
 import pytest
 
 from app.providers.base import GenerationSettings, LLMProvider, LLMResponse, ToolCallRequest
@@ -208,3 +212,190 @@ class TestGenerationSettings:
         gs = GenerationSettings()
         with pytest.raises(Exception):
             gs.temperature = 1.0  # type: ignore[misc]
+
+
+# ---------------------------------------------------------------------------
+# LLMProvider._is_transient_error
+# ---------------------------------------------------------------------------
+
+class TestIsTransientError:
+    @pytest.mark.parametrize("marker", LLMProvider._TRANSIENT_ERROR_MARKERS)
+    def test_each_marker_detected(self, marker):
+        assert LLMProvider._is_transient_error(f"Error: {marker} happened") is True
+
+    def test_non_transient_returns_false(self):
+        assert LLMProvider._is_transient_error("Invalid request body") is False
+
+    def test_none_returns_false(self):
+        assert LLMProvider._is_transient_error(None) is False
+
+    def test_empty_string_returns_false(self):
+        assert LLMProvider._is_transient_error("") is False
+
+    def test_detection_is_case_insensitive(self):
+        assert LLMProvider._is_transient_error("Error: RATE LIMIT exceeded") is True
+        assert LLMProvider._is_transient_error("Error: Overloaded") is True
+
+
+# ---------------------------------------------------------------------------
+# LLMProvider._strip_image_content
+# ---------------------------------------------------------------------------
+
+class TestStripImageContent:
+    def test_returns_none_when_no_images_present(self):
+        msgs = [{"role": "user", "content": "hello"}]
+        assert LLMProvider._strip_image_content(msgs) is None
+
+    def test_replaces_image_url_block_with_text_placeholder(self):
+        msgs = [{"role": "user", "content": [{"type": "image_url"}]}]
+        result = LLMProvider._strip_image_content(msgs)
+        assert result is not None
+        block = result[0]["content"][0]
+        assert block["type"] == "text"
+        assert "image" in block["text"]
+
+    def test_path_in_meta_appears_in_placeholder(self):
+        msgs = [
+            {"role": "user", "content": [{"type": "image_url", "_meta": {"path": "photo.png"}}]}
+        ]
+        result = LLMProvider._strip_image_content(msgs)
+        assert result is not None
+        assert "photo.png" in result[0]["content"][0]["text"]
+
+    def test_preserves_non_image_blocks_before_and_after(self):
+        msgs = [
+            {
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": "describe this"},
+                    {"type": "image_url"},
+                    {"type": "text", "text": "please"},
+                ],
+            }
+        ]
+        result = LLMProvider._strip_image_content(msgs)
+        assert result is not None
+        content = result[0]["content"]
+        assert content[0]["text"] == "describe this"
+        assert content[1]["type"] == "text"  # replaced image
+        assert content[2]["text"] == "please"
+
+    def test_string_content_messages_are_passed_through(self):
+        msgs = [
+            {"role": "user", "content": "no images here"},
+            {"role": "user", "content": [{"type": "image_url"}]},
+        ]
+        result = LLMProvider._strip_image_content(msgs)
+        assert result is not None
+        assert result[0]["content"] == "no images here"
+
+    def test_multiple_images_all_replaced(self):
+        msgs = [
+            {"role": "user", "content": [{"type": "image_url"}, {"type": "image_url"}]}
+        ]
+        result = LLMProvider._strip_image_content(msgs)
+        assert result is not None
+        assert all(b["type"] == "text" for b in result[0]["content"])
+
+
+# ---------------------------------------------------------------------------
+# LLMProvider.chat_with_retry  (async)
+# ---------------------------------------------------------------------------
+
+class _ConcreteProvider(LLMProvider):
+    """Minimal concrete LLMProvider for testing retry logic."""
+
+    def __init__(self):
+        super().__init__(api_key="test", api_base="http://test")
+        self._queue: deque[LLMResponse] = deque()
+
+    def push(self, response: LLMResponse) -> None:
+        self._queue.append(response)
+
+    async def chat(
+        self,
+        messages,
+        tools=None,
+        model=None,
+        max_tokens=4096,
+        temperature=0.7,
+        reasoning_effort=None,
+        tool_choice=None,
+    ) -> LLMResponse:
+        if self._queue:
+            return self._queue.popleft()
+        return LLMResponse(content="default")
+
+    def get_default_model(self) -> str:
+        return "test-model"
+
+
+class TestChatWithRetry:
+    def setup_method(self):
+        self.provider = _ConcreteProvider()
+
+    async def test_success_on_first_attempt_returns_immediately(self):
+        self.provider.push(LLMResponse(content="ok"))
+        result = await self.provider.chat_with_retry(
+            messages=[{"role": "user", "content": "hi"}]
+        )
+        assert result.content == "ok"
+        assert result.finish_reason == "stop"
+
+    async def test_non_transient_error_returned_without_retry(self):
+        """A permanent error (not in _TRANSIENT_ERROR_MARKERS) stops immediately."""
+        self.provider.push(LLMResponse(content="Invalid API key", finish_reason="error"))
+        self.provider.push(LLMResponse(content="should not reach"))
+
+        with patch("asyncio.sleep", new_callable=AsyncMock) as mock_sleep:
+            result = await self.provider.chat_with_retry(
+                messages=[{"role": "user", "content": "hi"}]
+            )
+
+        assert result.content == "Invalid API key"
+        mock_sleep.assert_not_called()
+
+    async def test_transient_error_triggers_retries(self):
+        """A 429 causes 3 sleeps and a final successful call."""
+        transient = LLMResponse(content="Error: 429 rate limit", finish_reason="error")
+        success = LLMResponse(content="success after retries")
+        for _ in range(3):  # consumed in the for-loop
+            self.provider.push(transient)
+        self.provider.push(success)  # consumed by the final call after loop
+
+        with patch("asyncio.sleep", new_callable=AsyncMock) as mock_sleep:
+            result = await self.provider.chat_with_retry(
+                messages=[{"role": "user", "content": "hi"}]
+            )
+
+        assert result.content == "success after retries"
+        assert mock_sleep.call_count == 3
+
+    async def test_retry_delay_sequence_is_1_2_4(self):
+        """Exponential back-off delays match _CHAT_RETRY_DELAYS = (1, 2, 4)."""
+        transient = LLMResponse(content="Error: 503", finish_reason="error")
+        for _ in range(3):
+            self.provider.push(transient)
+        self.provider.push(LLMResponse(content="ok"))
+
+        with patch("asyncio.sleep", new_callable=AsyncMock) as mock_sleep:
+            await self.provider.chat_with_retry(
+                messages=[{"role": "user", "content": "hi"}]
+            )
+
+        delays = [c.args[0] for c in mock_sleep.call_args_list]
+        assert delays == [1, 2, 4]
+
+    async def test_all_retries_exhausted_returns_last_error_response(self):
+        """When every attempt fails, the final error response is returned."""
+        transient = LLMResponse(content="Error: 502 bad gateway", finish_reason="error")
+        for _ in range(4):  # 3 in loop + 1 final
+            self.provider.push(transient)
+
+        with patch("asyncio.sleep", new_callable=AsyncMock):
+            result = await self.provider.chat_with_retry(
+                messages=[{"role": "user", "content": "hi"}]
+            )
+
+        assert result.finish_reason == "error"
+
