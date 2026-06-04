@@ -46,20 +46,20 @@ class OpenAICompatProvider(LLMProvider):
     def __init__(
         self,
         api_key: str | None = None,
-        api_base: str | None = None,
+        base_url: str | None = None,
         default_model: str = "gpt-5-mini",
         extra_headers: dict[str, str] | None = None,
         spec: ProviderSpec | None = None,
     ):
-        super().__init__(api_key, api_base)
+        super().__init__(api_key, base_url)
         self.default_model = default_model
         self.extra_headers = extra_headers or {}
         self._spec = spec
 
         if api_key and spec and spec.env_key:
-            self._setup_env(api_key, api_base)
+            self._setup_env(api_key, base_url)
 
-        effective_base = api_base or (spec.default_api_base if spec else None) or None
+        effective_base = base_url or (spec.default_base_url if spec else None) or None
 
         self._client = AsyncOpenAI(
             api_key=api_key or "no-key",
@@ -70,7 +70,7 @@ class OpenAICompatProvider(LLMProvider):
             },
         )
 
-    def _setup_env(self, api_key: str, api_base: str | None) -> None:
+    def _setup_env(self, api_key: str, base_url: str | None) -> None:
         """Set environment variables based on provider spec."""
         spec = self._spec
         if not spec or not spec.env_key:
@@ -79,10 +79,10 @@ class OpenAICompatProvider(LLMProvider):
             os.environ[spec.env_key] = api_key
         else:
             os.environ.setdefault(spec.env_key, api_key)
-        effective_base = api_base or spec.default_api_base
+        effective_base = base_url or spec.default_base_url
         for env_name, env_val in spec.env_extras:
             resolved = env_val.replace("{api_key}", api_key).replace(
-                "{api_base}", effective_base
+                "{base_url}", effective_base
             )
             os.environ.setdefault(env_name, resolved)
 

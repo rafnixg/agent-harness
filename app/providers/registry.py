@@ -24,7 +24,7 @@ class ProviderSpec:
 
     Placeholders in env_extras values:
       {api_key}  — the user's API key
-      {api_base} — api_base from config, or this spec's default_api_base
+      {base_url} — base_url from config, or this spec's default_base_url
     """
 
     # identity
@@ -44,8 +44,8 @@ class ProviderSpec:
     is_gateway: bool = False  # routes any model (OpenRouter, AiHubMix)
     is_local: bool = False  # local deployment (vLLM, Ollama)
     detect_by_key_prefix: str = ""  # match api_key prefix, e.g. "sk-or-"
-    detect_by_base_keyword: str = ""  # match substring in api_base URL
-    default_api_base: str = ""  # OpenAI-compatible base URL for this provider
+    detect_by_base_keyword: str = ""  # match substring in base_url URL
+    default_base_url: str = ""  # OpenAI-compatible base URL for this provider
 
     # gateway behavior
     strip_model_prefix: bool = False  # strip "provider/" before sending to gateway
@@ -81,7 +81,7 @@ PROVIDERS: tuple[ProviderSpec, ...] = (
         backend="openai_compat",
         is_direct=True,
     ),
-    # === Gateways (detected by api_key / api_base, not model name) =========
+    # === Gateways (detected by api_key / base_url, not model name) =========
     # Gateways can route any model, so they win in fallback.
     # OpenRouter: global gateway, keys start with "sk-or-"
     ProviderSpec(
@@ -93,7 +93,7 @@ PROVIDERS: tuple[ProviderSpec, ...] = (
         is_gateway=True,
         detect_by_key_prefix="sk-or-",
         detect_by_base_keyword="openrouter",
-        default_api_base="https://openrouter.ai/api/v1",
+        default_base_url="https://openrouter.ai/api/v1",
         supports_prompt_caching=True,
     ),
     # === Standard providers (matched by model-name keywords) ===============
@@ -122,7 +122,7 @@ PROVIDERS: tuple[ProviderSpec, ...] = (
         display_name="OpenAI Codex",
         backend="openai_codex",
         detect_by_base_keyword="codex",
-        default_api_base="https://chatgpt.com/backend-api",
+        default_base_url="https://chatgpt.com/backend-api",
         is_oauth=True,
     ),
     # GitHub Copilot: OAuth-based
@@ -132,7 +132,7 @@ PROVIDERS: tuple[ProviderSpec, ...] = (
         env_key="",
         display_name="Github Copilot",
         backend="openai_compat",
-        default_api_base="https://api.githubcopilot.com",
+        default_base_url="https://api.githubcopilot.com",
         is_oauth=True,
     ),
     # DeepSeek: OpenAI-compatible at api.deepseek.com
@@ -142,7 +142,7 @@ PROVIDERS: tuple[ProviderSpec, ...] = (
         env_key="DEEPSEEK_API_KEY",
         display_name="DeepSeek",
         backend="openai_compat",
-        default_api_base="https://api.deepseek.com",
+        default_base_url="https://api.deepseek.com",
     ),
     # Gemini: Google's OpenAI-compatible endpoint
     ProviderSpec(
@@ -151,9 +151,9 @@ PROVIDERS: tuple[ProviderSpec, ...] = (
         env_key="GEMINI_API_KEY",
         display_name="Gemini",
         backend="openai_compat",
-        default_api_base="https://generativelanguage.googleapis.com/v1beta/openai/",
+        default_base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
     ),
-    # === Local deployment (matched by config key, NOT by api_base) =========
+    # === Local deployment (matched by config key, NOT by base_url) =========
     # vLLM / any OpenAI-compatible local server
     ProviderSpec(
         name="vllm",
@@ -172,7 +172,7 @@ PROVIDERS: tuple[ProviderSpec, ...] = (
         backend="openai_compat",
         is_local=True,
         detect_by_base_keyword="11434",
-        default_api_base="http://localhost:11434/v1",
+        default_base_url="http://localhost:11434/v1",
     ),
 )
 

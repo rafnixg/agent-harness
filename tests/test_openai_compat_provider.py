@@ -86,7 +86,7 @@ def provider():
     with patch("app.providers.openai_compat_provider.AsyncOpenAI"):
         p = OpenAICompatProvider(
             api_key="sk-test",
-            api_base="http://test",
+            base_url="http://test",
             default_model="test-model",
         )
     p._client = MagicMock()
@@ -313,7 +313,7 @@ class TestGetDefaultModel:
     def test_returns_configured_default_model(self):
         with patch("app.providers.openai_compat_provider.AsyncOpenAI"):
             p = OpenAICompatProvider(
-                api_key="k", api_base="http://x", default_model="my-model"
+                api_key="k", base_url="http://x", default_model="my-model"
             )
         assert p.get_default_model() == "my-model"
 
@@ -328,7 +328,7 @@ class TestSetupEnv:
         with patch("app.providers.openai_compat_provider.AsyncOpenAI"):
             OpenAICompatProvider(
                 api_key="sk-gateway",
-                api_base="http://x",
+                base_url="http://x",
                 spec=_GATEWAY_SPEC,
             )
         assert os.environ.get("TEST_GW_API_KEY") == "sk-gateway"
@@ -338,7 +338,7 @@ class TestSetupEnv:
         with patch("app.providers.openai_compat_provider.AsyncOpenAI"):
             OpenAICompatProvider(
                 api_key="new-key",
-                api_base="http://x",
+                base_url="http://x",
                 spec=_DIRECT_SPEC,
             )
         # setdefault: existing value should NOT be overwritten
@@ -347,5 +347,5 @@ class TestSetupEnv:
     def test_no_spec_does_not_touch_env(self, monkeypatch):
         monkeypatch.delenv("TEST_GW_API_KEY", raising=False)
         with patch("app.providers.openai_compat_provider.AsyncOpenAI"):
-            OpenAICompatProvider(api_key="sk-test", api_base="http://x")
+            OpenAICompatProvider(api_key="sk-test", base_url="http://x")
         assert os.environ.get("TEST_GW_API_KEY") is None

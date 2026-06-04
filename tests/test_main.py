@@ -1,11 +1,11 @@
 """Tests for the main.py CLI entry point (secondary)."""
 
-from unittest.mock import MagicMock, patch
+from pathlib import Path
+from unittest.mock import patch
 
 import pytest
 
-import app.main as main_module
-from app.main import main
+from app.main import _build_provider_config, main
 
 
 # ---------------------------------------------------------------------------
@@ -25,73 +25,86 @@ class TestCliArguments:
 
 
 # ---------------------------------------------------------------------------
-# API key validation
+# Provider config resolution
 # ---------------------------------------------------------------------------
 
-class TestApiKeyValidation:
-    def test_missing_api_key_raises_runtime_error(self, monkeypatch):
-        monkeypatch.setattr(main_module, "API_KEY", None)
-        with patch("sys.argv", ["prog", "-p", "hello"]):
-            with pytest.raises(RuntimeError, match="OPENROUTER_API_KEY"):
-                main()
+class TestProviderConfigResolution:
+    def test_unknown_provider_raises_runtime_error(self):
+        with pytest.raises(RuntimeError, match="Unknown provider"):
+            _build_provider_config("missing-provider")
 
-    def test_present_api_key_does_not_raise(self, monkeypatch):
-        monkeypatch.setattr(main_module, "API_KEY", "sk-test")
-        with patch("sys.argv", ["prog", "-p", "hello"]):
-            with patch("app.main.OpenAI"):
-                with patch("app.main.AgentLoop") as MockAgent:
-                    MockAgent.return_value.run.return_value = ""
-                    main()  # should not raise
+    def test_missing_api_key_raises_runtime_error(self, monkeypatch):
+        monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
+        with pytest.raises(RuntimeError, match="OPENROUTER_API_KEY"):
+            _build_provider_config("openrouter")
+
+    def test_openrouter_defaults_base_url(self, monkeypatch):
+        monkeypatch.setenv("OPENROUTER_API_KEY", "sk-test")
+        monkeypatch.delenv("OPENROUTER_BASE_URL", raising=False)
+        api_key, base_url = _build_provider_config("openrouter")
+        assert api_key == "sk-test"
+        assert base_url == "https://openrouter.ai/api/v1"
 
 
 # ---------------------------------------------------------------------------
 # Agent invocation
 # ---------------------------------------------------------------------------
 
-class TestAgentInvocation:
+class TestMainInvocation:
     def test_prompt_forwarded_to_agent_run(self, monkeypatch, capsys):
-        monkeypatch.setattr(main_module, "API_KEY", "sk-test")
+        monkeypatch.setenv("OPENROUTER_API_KEY", "sk-test")
         with patch("sys.argv", ["prog", "-p", "say hello"]):
             with patch("app.main.OpenAI"):
-                with patch("app.main.AgentLoop") as MockAgent:
-                    MockAgent.return_value.run.return_value = "Hello!"
+                with patch("app.main.AgentLoop") as mock_agent:
+                    mock_agent.return_value.run.return_value = "Hello!"
                     main()
 
-        MockAgent.return_value.run.assert_called_once_with("say hello")
+        mock_agent.return_value.run.assert_called_once_with("say hello")
         assert "Hello!" in capsys.readouterr().out
 
-    def test_model_env_var_passed_to_agent(self, monkeypatch):
-        monkeypatch.setattr(main_module, "API_KEY", "sk-test")
-        monkeypatch.setattr(main_module, "MODEL", "custom-model")
-        with patch("sys.argv", ["prog", "-p", "hi"]):
+    def test_model_arg_passed_to_agent(self, monkeypatch):
+        monkeypatch.setenv("OPENROUTER_API_KEY", "sk-test")
+        with patch("sys.argv", ["prog", "-p", "hi", "--model", "custom-model"]):
             with patch("app.main.OpenAI"):
-                with patch("app.main.AgentLoop") as MockAgent:
-                    MockAgent.return_value.run.return_value = ""
+                with patch("app.main.AgentLoop") as mock_agent:
+                    mock_agent.return_value.run.return_value = ""
                     main()
 
-        call_kwargs = MockAgent.call_args.kwargs
+        call_kwargs = mock_agent.call_args.kwargs
         assert call_kwargs.get("model") == "custom-model"
 
-    def test_workspace_path_passed_to_agent(self, monkeypatch):
-        from pathlib import Path
-
-        monkeypatch.setattr(main_module, "API_KEY", "sk-test")
-        monkeypatch.setattr(main_module, "WORKSPACE_PATH", "/custom/workspace")
-        with patch("sys.argv", ["prog", "-p", "hi"]):
+    def test_workspace_arg_passed_to_agent(self, monkeypatch):
+        monkeypatch.setenv("OPENROUTER_API_KEY", "sk-test")
+        with patch("sys.argv", ["prog", "-p", "hi", "--workspace", "/custom/workspace"]):
             with patch("app.main.OpenAI"):
-                with patch("app.main.AgentLoop") as MockAgent:
-                    MockAgent.return_value.run.return_value = ""
+                with patch("app.main.AgentLoop") as mock_agent:
+                    mock_agent.return_value.run.return_value = ""
                     main()
 
-        call_kwargs = MockAgent.call_args.kwargs
+        call_kwargs = mock_agent.call_args.kwargs
         assert call_kwargs.get("workspace") == Path("/custom/workspace")
 
+    def test_provider_arg_affects_client_base_url_env_name(self, monkeypatch):
+        monkeypatch.setenv("OPENAI_API_KEY", "sk-openai")
+        monkeypatch.setenv("OPENAI_BASE_URL", "https://example.local/v1")
+        with patch("sys.argv", ["prog", "-p", "hi", "--provider", "openai"]):
+            with patch("app.main.AgentLoop") as mock_agent:
+                mock_agent.return_value.run.return_value = "ok"
+                with patch("app.main.OpenAI") as mock_openai:
+                    main()
+
+        mock_openai.assert_called_once_with(
+            api_key="sk-openai",
+            base_url="https://example.local/v1",
+        )
+
+
     def test_agent_result_printed_to_stdout(self, monkeypatch, capsys):
-        monkeypatch.setattr(main_module, "API_KEY", "sk-test")
+        monkeypatch.setenv("OPENROUTER_API_KEY", "sk-test")
         with patch("sys.argv", ["prog", "-p", "q"]):
             with patch("app.main.OpenAI"):
-                with patch("app.main.AgentLoop") as MockAgent:
-                    MockAgent.return_value.run.return_value = "the answer"
+                with patch("app.main.AgentLoop") as mock_agent:
+                    mock_agent.return_value.run.return_value = "the answer"
                     main()
 
         assert "the answer" in capsys.readouterr().out

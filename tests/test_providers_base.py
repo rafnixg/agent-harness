@@ -306,7 +306,7 @@ class _ConcreteProvider(LLMProvider):
     """Minimal concrete LLMProvider for testing retry logic."""
 
     def __init__(self):
-        super().__init__(api_key="test", api_base="http://test")
+        super().__init__(api_key="test", base_url="http://test")
         self._queue: deque[LLMResponse] = deque()
 
     def push(self, response: LLMResponse) -> None:
