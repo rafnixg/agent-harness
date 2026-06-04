@@ -1,15 +1,4 @@
-[![progress-banner](https://backend.codecrafters.io/progress/ai-agent/id/placeholder)](https://app.codecrafters.io/courses/ai-agent/overview)
-
-This is a starting point for Python solutions to the
-["Build Your Own AI Agent" Challenge](https://app.codecrafters.io/courses/ai-agent/overview).
-
-In this challenge, you'll build an AI coding agent similar to Claude Code or Cursor Agent. Your agent will be able to use tools like reading/writing files, executing terminal commands, and more.
-
-**Note**: Head over to [codecrafters.io](https://codecrafters.io) to try the challenge.
-
----
-
-# AI Coding Agent
+# AI Coding Agent Harness
 
 Agente de IA que ejecuta tareas de programación de forma autónoma usando el patrón **tool-use**: el LLM razona, invoca herramientas (leer/escribir archivos, ejecutar comandos) y repite hasta completar la tarea.
 

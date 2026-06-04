@@ -25,13 +25,13 @@ def main():
         raise RuntimeError("OPENROUTER_API_KEY is not set")
 
     client = OpenAI(api_key=API_KEY, base_url=BASE_URL)
-    tools = create_default_registry()
     agent = AgentLoop(
-        llm_provider=client, 
-        model=MODEL, 
-        tools=tools, 
-        workspace=Path(WORKSPACE_PATH)
+        llm_provider=client,
+        model=MODEL,
+        workspace=Path(WORKSPACE_PATH),
     )
+    for tool in create_default_registry():
+        agent.tools.register(tool)
 
     result = agent.run(args.p)
     print(result)

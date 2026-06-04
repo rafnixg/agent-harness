@@ -33,7 +33,7 @@ Este proyecto implementa ese ciclo de forma mínima y legible, sin frameworks ex
 
 ```bash
 git clone <repo>
-cd codecrafters-claude-code-python
+cd agent-harness
 python -m venv .venv && source .venv/Scripts/activate   # Windows
 pip install -e ".[dev]"
 ```
