@@ -11,10 +11,10 @@
       
       
       
-        <link rel="prev" href="../api/">
+        <link rel="prev" href="../introduccion/">
       
       
-        <link rel="next" href="../providers/">
+        <link rel="next" href="../features/">
       
       
         
@@ -25,7 +25,7 @@
     
     
       
-        <title>Agent Loop - AI Coding Agent Harness Docs</title>
+        <title>Arquitectura - AI Coding Agent Harness Docs</title>
       
     
     
@@ -66,7 +66,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#agent-loop" class="md-skip">
+        <a href="#arquitectura" class="md-skip">
           Skip to content
         </a>
       
@@ -102,7 +102,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Agent Loop
+              Arquitectura
             
           </span>
         </div>
@@ -249,10 +249,37 @@
       
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../architecture/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arquitectura
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -268,6 +295,131 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#vision-general" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vision general
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#capas-de-la-arquitectura" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Capas de la arquitectura
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#estructura-de-directorios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Estructura de directorios
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#componentes-clave" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Componentes clave
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Componentes clave">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#agentloop-appagentpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AgentLoop (app/agent.py)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tool-system-apptools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tool System (app/tools/)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#provider-layer-appproviders" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Provider Layer (app/providers/)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#flujo-de-datos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flujo de datos
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#referencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Referencias
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -330,37 +482,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Agent Loop
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../agent-loop/" class="md-nav__link">
         
   
   
@@ -376,137 +501,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#clase-agentloop" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Clase AgentLoop
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Clase AgentLoop">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#constructor" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Constructor
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#flujo-de-ejecucion" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Flujo de ejecución
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Flujo de ejecución">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#estados-posibles-al-final-de-un-ciclo" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Estados posibles al final de un ciclo
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_chat-llamada-al-llm" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        _chat() — llamada al LLM
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_handle_tool_calls-ejecucion-de-herramientas" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        _handle_tool_calls() — ejecución de herramientas
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#proteccion-contra-bucles-infinitos" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Protección contra bucles infinitos
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#historial-de-mensajes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Historial de mensajes
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#diagrama-de-secuencia" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Diagrama de secuencia
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -619,22 +613,77 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#clase-agentloop" class="md-nav__link">
+  <a href="#vision-general" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Clase AgentLoop
+        Vision general
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Clase AgentLoop">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#capas-de-la-arquitectura" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Capas de la arquitectura
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#estructura-de-directorios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Estructura de directorios
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#componentes-clave" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Componentes clave
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Componentes clave">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#constructor" class="md-nav__link">
+  <a href="#agentloop-appagentpy" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Constructor
+        AgentLoop (app/agent.py)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tool-system-apptools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tool System (app/tools/)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#provider-layer-appproviders" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Provider Layer (app/providers/)
       
     </span>
   </a>
@@ -647,38 +696,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#flujo-de-ejecucion" class="md-nav__link">
+  <a href="#flujo-de-datos" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Flujo de ejecución
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Flujo de ejecución">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#estados-posibles-al-final-de-un-ciclo" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Estados posibles al final de un ciclo
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_chat-llamada-al-llm" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        _chat() — llamada al LLM
+        Flujo de datos
       
     </span>
   </a>
@@ -686,43 +707,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_handle_tool_calls-ejecucion-de-herramientas" class="md-nav__link">
+  <a href="#referencias" class="md-nav__link">
     <span class="md-ellipsis">
       
-        _handle_tool_calls() — ejecución de herramientas
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#proteccion-contra-bucles-infinitos" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Protección contra bucles infinitos
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#historial-de-mensajes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Historial de mensajes
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#diagrama-de-secuencia" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Diagrama de secuencia
+        Referencias
       
     </span>
   </a>
@@ -746,136 +734,174 @@
 
 
 
-<h1 id="agent-loop">Agent Loop</h1>
-<p>El <strong>Agent Loop</strong> es el núcleo del sistema. Implementa el patrón <em>ReAct</em> (Reason + Act): el agente razona con el LLM, actúa ejecutando herramientas, observa el resultado y repite hasta obtener una respuesta final.</p>
+<h1 id="arquitectura">Arquitectura</h1>
+<blockquote>
+<p>Mapa de alto nivel del sistema. Punto de entrada para nuevos contribuidores.
+Fuente de verdad sobre capas, limites de dominio y decisiones tecnicas.</p>
+</blockquote>
 <hr />
-<h2 id="clase-agentloop">Clase <code>AgentLoop</code></h2>
-<pre><code>app/agent.py → class AgentLoop
+<h2 id="vision-general">Vision general</h2>
+<p>Este proyecto es un agente de codificacion: envuelve un LLM con un harness para que pueda razonar y actuar sobre herramientas reales.</p>
+<pre><code class="language-text">Agent = Model + Harness
 </code></pre>
-<h3 id="constructor">Constructor</h3>
-<pre><code class="language-python">AgentLoop(
-    llm_provider: Any,           # provider LLM (openai_compat, anthropic, etc.)
-    workspace: Path,             # directorio de trabajo
-    model: str | None = None,    # modelo a usar (default: proveedor decide)
-    max_iterations: int = 40,    # límite de ciclos por ejecución
-    max_tokens: int = 4000,      # tokens máximos por respuesta del LLM
-)
-</code></pre>
-<p>El <code>ToolRegistry</code> se crea vacío en <code>__init__</code>. Las herramientas se registran en <code>agent.tools</code> antes de llamar a <code>run()</code>.</p>
-<p><code>AgentLoop</code> se usa tanto desde CLI (<code>app/main.py</code>) como desde el endpoint HTTP (<code>app/server.py</code>).</p>
+<p>El modelo aporta el razonamiento. El harness aporta ejecucion, control y seguridad operativa.</p>
 <hr />
-<h2 id="flujo-de-ejecucion">Flujo de ejecución</h2>
-<pre><code>run(prompt)
-│
-├─ messages = [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: prompt}]
-│
-└─ for _iteration in range(max_iterations):
-       │
-    ├─ response = _chat()          ← llamada al LLM (provider-agnostic)
-       │
-    ├─ normaliza respuesta (OpenAI client o LLMResponse)
-    ├─ messages.append(assistant_message)
-    │
-    ├─ if no hay tool_calls:
-    │      return content          ← RESPUESTA FINAL
-    │
-    └─ _handle_tool_calls(tool_calls)
-        │
-        ├─ parse tool name + arguments (JSON)
-        ├─ permission_policy.decide(name, args)
-        ├─ tools.execute(name, **args)
-        └─ messages.append({&quot;role&quot;: &quot;tool&quot;, &quot;content&quot;: result, ...})
-
-raise RuntimeError(&quot;max_iterations reached: 40&quot;)
+<h2 id="capas-de-la-arquitectura">Capas de la arquitectura</h2>
+<pre><code class="language-text">┌──────────────────────────────────────────────────────┐
+│                    Entrypoint                        │
+│          app/main.py · app/server.py                │
+└──────────────────────┬───────────────────────────────┘
+                       │
+┌──────────────────────▼───────────────────────────────┐
+│                    Agent Loop                        │
+│                    app/agent.py                      │
+│     ReAct: Reason -&gt; Act -&gt; Observe -&gt; Repeat        │
+│     max_iterations=40 · max_tokens=4000              │
+└─────────┬──────────────────────────┬─────────────────┘
+          │                          │
+┌─────────▼─────────┐      ┌─────────▼──────────────────┐
+│   LLM Providers   │      │        Tool System          │
+│  app/providers/   │      │         app/tools/          │
+│                   │      │                             │
+│ base.py (ABC)     │      │ ToolRegistry                │
+│   └─ LLMProvider  │      │ ├── read_file               │
+│   └─ LLMResponse  │      │ ├── write_file              │
+│   └─ ToolCallReq  │      │ └── bash_terminal           │
+│                   │      │                             │
+│ registry.py       │      │ PermissionPolicy            │
+│   └─ ProviderSpec │      │ ├── AlwaysAsk               │
+│                   │      │ ├── AlwaysAllow             │
+│ openai_compat_    │      │ ├── AskOnce                 │
+│   provider.py     │      │ └── AllowList               │
+│ antropic_         │      └─────────────────────────────┘
+│   provider.py     │
+└───────────────────┘
 </code></pre>
-<h3 id="estados-posibles-al-final-de-un-ciclo">Estados posibles al final de un ciclo</h3>
+<hr />
+<h2 id="estructura-de-directorios">Estructura de directorios</h2>
+<pre><code class="language-text">.
+├── ARCHITECTURE.md              ← resumen raiz
+├── README.md
+├── TODO.md
+│
+├── app/
+│   ├── main.py                  ← CLI entrypoint
+│   ├── server.py                ← FastAPI entrypoint
+│   ├── agent.py                 ← AgentLoop (provider-agnostic)
+│   ├── tools/
+│   │   ├── base.py              ← Tool ABC + ToolRegistry
+│   │   ├── permission_policy.py ← AlwaysAsk/AlwaysAllow/AskOnce/AllowList
+│   │   ├── read_file.py
+│   │   ├── write_file.py
+│   │   └── bash.py
+│   └── providers/
+│       ├── base.py              ← LLMProvider ABC + dataclasses
+│       ├── openai_compat_provider.py
+│       ├── antropic_provider.py
+│       └── registry.py          ← ProviderSpec + PROVIDERS
+│
+├── docs-md/                     ← fuente markdown para MkDocs
+│   ├── architecture.md          ← este archivo
+│   ├── introduccion.md
+│   ├── api.md
+│   ├── agent-loop.md
+│   ├── providers.md
+│   ├── tools-basicas.md
+│   ├── permisos.md
+│   └── exec-plans/
+│
+├── docs/                        ← sitio HTML generado por MkDocs
+│
+└── tests/
+</code></pre>
+<hr />
+<h2 id="componentes-clave">Componentes clave</h2>
+<h3 id="agentloop-appagentpy">AgentLoop (app/agent.py)</h3>
+<p>Implementa el ciclo ReAct y normaliza dos contratos de provider:</p>
+<ul>
+<li><code>LLMProvider</code> moderno (async, <code>chat_with_retry</code>)</li>
+<li>cliente legacy estilo OpenAI (<code>chat.completions.create</code>)</li>
+</ul>
+<p>Flujo simplificado:</p>
+<pre><code class="language-text">run(prompt)
+  -&gt; messages = [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: prompt}]
+  -&gt; for iteration in range(max_iterations):
+       response = _chat()
+       normalize(response)
+       if no tool_calls:
+           return content
+       _handle_tool_calls(tool_calls)
+  -&gt; raise RuntimeError(&quot;max_iterations reached&quot;)
+</code></pre>
+<h3 id="tool-system-apptools">Tool System (app/tools/)</h3>
+<p><code>ToolRegistry.execute</code> pasa por una politica de permisos antes de ejecutar:</p>
+<pre><code class="language-text">agent loop -&gt; permission policy -&gt; registry.execute
+</code></pre>
+<p>Tools por defecto:</p>
 <table>
 <thead>
 <tr>
-<th>Estado</th>
-<th>Condición</th>
-<th>Siguiente paso</th>
+<th>Tool</th>
+<th>Operacion</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>Respuesta final</strong></td>
-<td><code>message.tool_calls</code> es vacío</td>
-<td>Retorna <code>message.content</code></td>
+<td><code>read_file</code></td>
+<td>Lee archivos</td>
 </tr>
 <tr>
-<td><strong>Tool call</strong></td>
-<td><code>message.tool_calls</code> contiene funciones</td>
-<td>Ejecuta herramientas y continúa</td>
+<td><code>write_file</code></td>
+<td>Escribe archivos</td>
 </tr>
 <tr>
-<td><strong>Sin choices</strong></td>
-<td><code>response.choices</code> está vacío</td>
-<td><code>RuntimeError</code> inmediato</td>
-</tr>
-<tr>
-<td><strong>Límite alcanzado</strong></td>
-<td><code>_iteration == max_iterations - 1</code></td>
-<td><code>RuntimeError</code></td>
+<td><code>bash_terminal</code></td>
+<td>Ejecuta shell</td>
 </tr>
 </tbody>
 </table>
-<hr />
-<h2 id="_chat-llamada-al-llm"><code>_chat()</code> — llamada al LLM</h2>
-<pre><code class="language-python">def _chat(self):
-    if provider implementa LLMProvider:
-        return chat_with_retry(...)
-    return openai_client.chat.completions.create(...)
-</code></pre>
-<p>El agente soporta ambos contratos:</p>
+<h3 id="provider-layer-appproviders">Provider Layer (app/providers/)</h3>
+<p>Abstrae APIs LLM detras de <code>LLMProvider</code>:</p>
 <ul>
-<li>providers basados en <code>LLMProvider</code> (<code>chat_with_retry</code>)</li>
-<li>clientes estilo OpenAI (<code>chat.completions.create</code>)</li>
+<li><code>OpenAICompatProvider</code> para endpoints OpenAI-compatible</li>
+<li><code>AnthropicProvider</code> para SDK nativo Anthropic</li>
+<li><code>ProviderSpec</code> (<code>registry.py</code>) como metadata de seleccion y configuracion</li>
 </ul>
+<p><code>main.py</code> y <code>server.py</code> montan <code>AgentLoop</code> usando <code>build_llm_provider</code>, <code>build_permission_policy</code> y <code>build_tools</code>.</p>
 <hr />
-<h2 id="_handle_tool_calls-ejecucion-de-herramientas"><code>_handle_tool_calls()</code> — ejecución de herramientas</h2>
-<p>Para cada <code>tool_call</code> en la respuesta:</p>
-<ol>
-<li>Verifica que <code>type == "function"</code> (ignora tipos desconocidos con log a stderr).</li>
-<li>Deserializa <code>function.arguments</code> (JSON).</li>
-<li>Llama a la política de permisos y luego a <code>tools.execute(name, **args)</code>.</li>
-<li>Captura <code>KeyError</code>, <code>FileNotFoundError</code>, <code>ValueError</code>, <code>OSError</code> y los convierte en strings de error (el agente puede recuperarse sin abortar).</li>
-<li>Agrega un mensaje <code>role: tool</code> al historial con el resultado.</li>
-</ol>
-<hr />
-<h2 id="proteccion-contra-bucles-infinitos">Protección contra bucles infinitos</h2>
-<p>La versión original usaba <code>while True:</code> ignorando <code>max_iterations</code>. El bug fue corregido: el loop ahora usa <code>for _iteration in range(self.max_iterations)</code> y lanza <code>RuntimeError</code> al agotar las iteraciones.</p>
-<pre><code class="language-python">for _iteration in range(self.max_iterations):
-    ...
-
-raise RuntimeError(f&quot;max_iterations reached: {self.max_iterations}&quot;)
+<h2 id="flujo-de-datos">Flujo de datos</h2>
+<pre><code class="language-text">CLI: uv run -m app.main -p &quot;prompt&quot; --provider openrouter --permission-policy ask_once
+API: POST /ask (app.server)
+      │
+      ▼
+main.py / server.py
+  -&gt; build_llm_provider()
+  -&gt; build_permission_policy()
+  -&gt; AgentLoop + ToolRegistry
+      │
+      ▼
+AgentLoop.run(prompt)
+      │
+      ├─► _chat() -&gt; provider call
+      │
+      ├─► [si tool_calls] ToolRegistry.execute(name, **args)
+      │         ├─► PermissionPolicy.decide(name, args)
+      │         ├─► read_file / write_file -&gt; filesystem
+      │         └─► bash_terminal -&gt; subprocess (host)
+      │
+      └─► [si no tool_calls] return content
 </code></pre>
 <hr />
-<h2 id="historial-de-mensajes">Historial de mensajes</h2>
-<p>El historial se reinicia completamente en cada llamada a <code>run()</code>:</p>
-<pre><code class="language-python">self.messages = [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: prompt}]
-</code></pre>
-<p>Esto significa que <strong>cada invocación es stateless</strong> — el agente no recuerda conversaciones anteriores entre llamadas a <code>run()</code>. Si se necesita memoria entre sesiones, debe pasarse como parte del prompt.</p>
-<hr />
-<h2 id="diagrama-de-secuencia">Diagrama de secuencia</h2>
-<pre><code class="language-mermaid">sequenceDiagram
-    actor User
-    participant Agent as AgentLoop
-    participant LLM
-    participant Policy as PermissionPolicy
-    participant Tool as ToolRegistry
-
-    User-&gt;&gt;Agent: run(&quot;crea un archivo data.txt&quot;)
-    Agent-&gt;&gt;LLM: chat(messages, tools)
-    LLM--&gt;&gt;Agent: tool_call: write_file(...)
-    Agent-&gt;&gt;Policy: decide(&quot;write_file&quot;, args)
-    Policy--&gt;&gt;Agent: allow/ask/deny
-    Agent-&gt;&gt;Tool: execute(&quot;write_file&quot;, ...)
-    Tool--&gt;&gt;Agent: &quot;Successfully wrote to data.txt&quot;
-    Agent-&gt;&gt;LLM: chat(messages + tool result)
-    LLM--&gt;&gt;Agent: &quot;El archivo data.txt fue creado.&quot;
-    Agent--&gt;&gt;User: &quot;El archivo data.txt fue creado.&quot;
-</code></pre>
+<h2 id="referencias">Referencias</h2>
+<ul>
+<li><a href="../introduccion/">Introduccion</a></li>
+<li><a href="../api/">API HTTP</a></li>
+<li><a href="../agent-loop/">Agent Loop</a></li>
+<li><a href="../providers/">Providers</a></li>
+<li><a href="../tools-basicas/">Tools basicas</a></li>
+<li><a href="../permisos/">Permisos</a></li>
+<li><a href="../exec-plans/PLAN/">Plan de ejecucion</a></li>
+</ul>
 
 
 

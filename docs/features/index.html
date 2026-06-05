@@ -1,0 +1,1476 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentacion del agente y su arquitectura">
+      
+      
+      
+      
+        <link rel="prev" href="../architecture/">
+      
+      
+        <link rel="next" href="../api/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Features - AI Coding Agent Harness Docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#featuresmd" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="AI Coding Agent Harness Docs" class="md-header__button md-logo" aria-label="AI Coding Agent Harness Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            AI Coding Agent Harness Docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Features
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="AI Coding Agent Harness Docs" class="md-nav__button md-logo" aria-label="AI Coding Agent Harness Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    AI Coding Agent Harness Docs
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inicio
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../introduccion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduccion
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arquitectura
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Features
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Features
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-runtime-interfaces" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1) Runtime interfaces
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-agent-loop" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2) Agent loop
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-providers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3) Providers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-tooling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4) Tooling
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-seguridad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5) Seguridad
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-calidad-y-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6) Calidad y testing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-observabilidad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7) Observabilidad
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-conocimiento-y-guidance-para-el-agente" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8) Conocimiento y guidance para el agente
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-slash-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9) Slash commands
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9) Slash commands">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#especificacion-minima-sugerida-para-resume" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Especificacion minima sugerida para /resume
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-tui-terminal-ui" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10) TUI (Terminal UI)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-extensibilidad-avanzada-mcp-skills-subagents-memoria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11) Extensibilidad avanzada (MCP, Skills, Subagents, Memoria)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-alineacion-con-harness-engineering" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12) Alineacion con Harness Engineering
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#13-resumen-ejecutivo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13) Resumen ejecutivo
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#14-checklist-rapido-de-release" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14) Checklist rapido de release
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API HTTP
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../agent-loop/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Agent Loop
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../providers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Providers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tools-basicas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tools Basicas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../permisos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permisos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-runtime-interfaces" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1) Runtime interfaces
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-agent-loop" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2) Agent loop
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-providers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3) Providers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-tooling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4) Tooling
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-seguridad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5) Seguridad
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-calidad-y-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6) Calidad y testing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-observabilidad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7) Observabilidad
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-conocimiento-y-guidance-para-el-agente" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8) Conocimiento y guidance para el agente
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-slash-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9) Slash commands
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9) Slash commands">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#especificacion-minima-sugerida-para-resume" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Especificacion minima sugerida para /resume
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-tui-terminal-ui" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10) TUI (Terminal UI)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-extensibilidad-avanzada-mcp-skills-subagents-memoria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11) Extensibilidad avanzada (MCP, Skills, Subagents, Memoria)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-alineacion-con-harness-engineering" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12) Alineacion con Harness Engineering
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#13-resumen-ejecutivo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13) Resumen ejecutivo
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#14-checklist-rapido-de-release" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14) Checklist rapido de release
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="featuresmd">features.md</h1>
+<blockquote>
+<p>Inventario de capacidades del harness.
+Objetivo: saber rapidamente que ya existe y que falta.</p>
+</blockquote>
+<p>Estado:
+- <code>Implemented</code>: funcionalidad disponible en el codigo actual.
+- <code>Partial</code>: existe una base, pero faltan piezas importantes.
+- <code>Missing</code>: no existe aun.</p>
+<p>Fuentes de referencia:
+- <code>ARCHITECTURE.md</code>
+- <code>TODO.md</code>
+- <code>app/</code>, <code>tests/</code></p>
+<hr />
+<h2 id="1-runtime-interfaces">1) Runtime interfaces</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Status</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CLI para ejecutar prompt (<code>app.main</code>)</td>
+<td>Implemented</td>
+<td>Soporta <code>-p</code>, <code>--provider</code>, <code>--model</code>, <code>--workspace</code>, politicas de permiso</td>
+</tr>
+<tr>
+<td>API HTTP (<code>app.server</code>)</td>
+<td>Implemented</td>
+<td><code>GET /health</code>, <code>POST /ask</code></td>
+</tr>
+<tr>
+<td>Servidor con <code>uvicorn</code> via modulo</td>
+<td>Implemented</td>
+<td><code>uv run -m app.server --host --port --reload</code></td>
+</tr>
+<tr>
+<td>Modo streaming de respuesta al cliente</td>
+<td>Missing</td>
+<td><code>POST /ask</code> devuelve respuesta final completa</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="2-agent-loop">2) Agent loop</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Status</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Loop ReAct (reason -&gt; act -&gt; observe)</td>
+<td>Implemented</td>
+<td><code>AgentLoop.run()</code></td>
+</tr>
+<tr>
+<td>Max iterations guard</td>
+<td>Implemented</td>
+<td>Default <code>max_iterations=40</code></td>
+</tr>
+<tr>
+<td>Max tokens por llamada</td>
+<td>Implemented</td>
+<td>Default <code>max_tokens=4000</code></td>
+</tr>
+<tr>
+<td>Soporte provider moderno (<code>LLMProvider</code>)</td>
+<td>Implemented</td>
+<td>Usa <code>chat_with_retry</code></td>
+</tr>
+<tr>
+<td>Soporte cliente estilo OpenAI legacy</td>
+<td>Implemented</td>
+<td>Rama <code>chat.completions.create</code></td>
+</tr>
+<tr>
+<td>Manejo de errores de tools en loop</td>
+<td>Implemented</td>
+<td>Captura <code>KeyError/FileNotFoundError/ValueError/OSError</code></td>
+</tr>
+<tr>
+<td>System prompt global configurable</td>
+<td>Missing</td>
+<td>No parametro <code>system_prompt</code> en <code>AgentLoop</code></td>
+</tr>
+<tr>
+<td>Memoria persistente entre runs</td>
+<td>Missing</td>
+<td><code>messages</code> se reinicia en cada <code>run()</code></td>
+</tr>
+<tr>
+<td>Compaction/truncacion de contexto</td>
+<td>Missing</td>
+<td>No estrategia anti-context-rot</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="3-providers">3) Providers</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Status</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Registro de providers por metadata (<code>ProviderSpec</code>)</td>
+<td>Implemented</td>
+<td><code>app/providers/registry.py</code></td>
+</tr>
+<tr>
+<td>Factory de providers (<code>build_llm_provider</code>)</td>
+<td>Implemented</td>
+<td>Seleccion por <code>spec.backend</code></td>
+</tr>
+<tr>
+<td>OpenAI-compatible provider</td>
+<td>Implemented</td>
+<td><code>OpenAICompatProvider</code></td>
+</tr>
+<tr>
+<td>Anthropic provider</td>
+<td>Implemented</td>
+<td><code>AnthropicProvider</code></td>
+</tr>
+<tr>
+<td>Retry en errores transitorios</td>
+<td>Implemented</td>
+<td><code>LLMProvider.chat_with_retry</code></td>
+</tr>
+<tr>
+<td>Seleccion de provider por env/CLI</td>
+<td>Implemented</td>
+<td><code>LLM_PROVIDER</code>, <code>--provider</code></td>
+</tr>
+<tr>
+<td>Telemetria/metricas de tokens visibles por sesion</td>
+<td>Partial</td>
+<td>existe <code>_last_usage</code> pero no reporte final robusto</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="4-tooling">4) Tooling</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Status</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tool ABC + ToolRegistry</td>
+<td>Implemented</td>
+<td><code>app/tools/base.py</code></td>
+</tr>
+<tr>
+<td>Tool <code>read_file</code></td>
+<td>Implemented</td>
+<td>Lectura de archivo</td>
+</tr>
+<tr>
+<td>Tool <code>write_file</code></td>
+<td>Implemented</td>
+<td>Escritura de archivo</td>
+</tr>
+<tr>
+<td>Tool <code>bash_terminal</code></td>
+<td>Implemented</td>
+<td>Ejecuta comandos shell</td>
+</tr>
+<tr>
+<td>Politicas de permisos (<code>always_ask</code>, <code>always_allow</code>, <code>ask_once</code>, <code>allow_list</code>)</td>
+<td>Implemented</td>
+<td><code>app/tools/permission_policy.py</code></td>
+</tr>
+<tr>
+<td>Factory de herramientas (<code>build_tools</code>)</td>
+<td>Implemented</td>
+<td>registra tools por defecto</td>
+</tr>
+<tr>
+<td>Sandboxing de comandos para <code>bash_terminal</code></td>
+<td>Missing</td>
+<td>No aislamiento fuerte</td>
+</tr>
+<tr>
+<td>Timeout para comandos shell</td>
+<td>Missing</td>
+<td>Riesgo de bloqueo por comando largo</td>
+</tr>
+<tr>
+<td>Restriccion de lectura/escritura al workspace</td>
+<td>Missing</td>
+<td>Falta validacion anti path traversal</td>
+</tr>
+<tr>
+<td>Limite de tamano de lectura de archivos</td>
+<td>Missing</td>
+<td>Falta <code>max_bytes</code> configurable</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="5-seguridad">5) Seguridad</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Status</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Politicas de permiso por tool call</td>
+<td>Implemented</td>
+<td>primer control de riesgo</td>
+</tr>
+<tr>
+<td>Confirmacion interactiva por tool call</td>
+<td>Implemented</td>
+<td>en <code>AlwaysAsk</code> y <code>AskOnce</code></td>
+</tr>
+<tr>
+<td>Sandbox de ejecucion de tools</td>
+<td>Missing</td>
+<td>no hay aislamiento de proceso/sistema</td>
+</tr>
+<tr>
+<td>Validacion estricta de rutas de archivo</td>
+<td>Missing</td>
+<td>pendiente en <code>read_file</code>/<code>write_file</code></td>
+</tr>
+<tr>
+<td>Hardening de comandos (<code>shell=False</code>, allowlist)</td>
+<td>Missing</td>
+<td>pendiente en <code>bash_terminal</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="6-calidad-y-testing">6) Calidad y testing</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Status</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Suite de tests unitarios/integracion</td>
+<td>Implemented</td>
+<td><code>tests/</code></td>
+</tr>
+<tr>
+<td>Tests de API FastAPI</td>
+<td>Implemented</td>
+<td><code>tests/test_server.py</code></td>
+</tr>
+<tr>
+<td>Build de docs con MkDocs</td>
+<td>Implemented</td>
+<td><code>mkdocs.yml</code>, <code>docs-md</code></td>
+</tr>
+<tr>
+<td>GitHub Action de docs</td>
+<td>Implemented</td>
+<td><code>.github/workflows/docs.yml</code></td>
+</tr>
+<tr>
+<td>CI de calidad completa (lint + tests + typecheck)</td>
+<td>Missing</td>
+<td>pendiente workflow <code>ci.yml</code></td>
+</tr>
+<tr>
+<td>Coverage minimo enforced</td>
+<td>Missing</td>
+<td>no <code>--cov-fail-under</code> obligatorio</td>
+</tr>
+<tr>
+<td>Hooks pre-commit</td>
+<td>Missing</td>
+<td>no <code>.pre-commit-config.yaml</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="7-observabilidad">7) Observabilidad</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Status</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Logs basicos de tool calls</td>
+<td>Partial</td>
+<td><code>print(..., stderr)</code></td>
+</tr>
+<tr>
+<td>Logging estructurado JSON</td>
+<td>Missing</td>
+<td>no tracing estructurado</td>
+</tr>
+<tr>
+<td>Session log persistente (<code>jsonl</code>)</td>
+<td>Missing</td>
+<td>no auditoria completa por sesion</td>
+</tr>
+<tr>
+<td>Metricas de duracion por tool</td>
+<td>Missing</td>
+<td>no instrumentation de tiempos</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="8-conocimiento-y-guidance-para-el-agente">8) Conocimiento y guidance para el agente</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Status</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Documentacion funcional (<code>docs-md</code>)</td>
+<td>Implemented</td>
+<td>intro, arquitectura, api, providers, tools, permisos</td>
+</tr>
+<tr>
+<td>Roadmap y gaps tecnicos (<code>TODO.md</code>)</td>
+<td>Implemented</td>
+<td>backlog priorizado</td>
+</tr>
+<tr>
+<td>Archivo guia <code>AGENTS.md</code></td>
+<td>Missing</td>
+<td>recomendado para feedforward</td>
+</tr>
+<tr>
+<td>Skills docs accionables para tareas repetidas</td>
+<td>Missing</td>
+<td>sugerido <code>docs/skills/</code></td>
+</tr>
+<tr>
+<td>Referencias de librerias para el agente</td>
+<td>Missing</td>
+<td>sugerido <code>docs/references/</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="9-slash-commands">9) Slash commands</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Status</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Router de slash commands en CLI/TUI</td>
+<td>Missing</td>
+<td>No parser dedicado para comandos tipo <code>/algo</code></td>
+</tr>
+<tr>
+<td><code>/resume</code> (resumen de sesion actual)</td>
+<td>Missing</td>
+<td>Debe condensar objetivo, cambios y siguientes pasos</td>
+</tr>
+<tr>
+<td>Slash command para estado (<code>/status</code> o equivalente)</td>
+<td>Missing</td>
+<td>Mostrar tests, docs y archivos tocados</td>
+</tr>
+<tr>
+<td>Slash command para ayuda (<code>/help</code>)</td>
+<td>Missing</td>
+<td>Descubrimiento de comandos disponibles</td>
+</tr>
+<tr>
+<td>Registro de comandos ejecutados por sesion</td>
+<td>Missing</td>
+<td>Base para auditoria y UX</td>
+</tr>
+</tbody>
+</table>
+<h3 id="especificacion-minima-sugerida-para-resume">Especificacion minima sugerida para <code>/resume</code></h3>
+<p>Input esperado:
+- opcional: nivel de detalle (<code>short</code>, <code>medium</code>, <code>full</code>)</p>
+<p>Output esperado:
+1. Objetivo actual de la sesion
+2. Cambios completados (archivos y resultado)
+3. Riesgos pendientes
+4. Siguientes pasos recomendados</p>
+<p>Ejemplo de salida esperada:</p>
+<pre><code class="language-text">Resumen (short)
+- Objetivo: exponer API del agente y mejorar docs.
+- Completado: endpoint /ask, docs MkDocs, tests en verde.
+- Pendiente: hardening de seguridad en tools.
+- Siguiente paso: agregar guards de path traversal + timeout de bash.
+</code></pre>
+<hr />
+<h2 id="10-tui-terminal-ui">10) TUI (Terminal UI)</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Status</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TUI interactiva para chat con el agente</td>
+<td>Missing</td>
+<td>Hoy la UX principal es CLI por flags</td>
+</tr>
+<tr>
+<td>Panel de contexto (provider/model/workspace/permisos)</td>
+<td>Missing</td>
+<td>Debe ser visible y editable en vivo</td>
+</tr>
+<tr>
+<td>Stream de eventos del loop (thought/tool/result)</td>
+<td>Missing</td>
+<td>Mejora trazabilidad durante ejecucion</td>
+</tr>
+<tr>
+<td>Acciones rapidas (run tests, build docs, open logs)</td>
+<td>Missing</td>
+<td>Atajos para feedback rapido</td>
+</tr>
+<tr>
+<td>Integracion de slash commands en TUI</td>
+<td>Missing</td>
+<td><code>/resume</code>, <code>/help</code>, <code>/status</code>, etc.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="11-extensibilidad-avanzada-mcp-skills-subagents-memoria">11) Extensibilidad avanzada (MCP, Skills, Subagents, Memoria)</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Status</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Soporte MCP (Model Context Protocol)</td>
+<td>Missing</td>
+<td>No cliente/registry MCP integrado en runtime</td>
+</tr>
+<tr>
+<td>Descubrimiento de herramientas MCP dinamicas</td>
+<td>Missing</td>
+<td>Sin handshake/capabilities negotiation</td>
+</tr>
+<tr>
+<td>Skills cargables por demanda</td>
+<td>Missing</td>
+<td>No progressive disclosure de tools/contexto</td>
+</tr>
+<tr>
+<td>Catalogo de Skills con metadata</td>
+<td>Missing</td>
+<td>Falta indice con trigger, scope y dependencias</td>
+</tr>
+<tr>
+<td>Soporte de subagents</td>
+<td>Missing</td>
+<td>No delegacion de subtareas a loops secundarios</td>
+</tr>
+<tr>
+<td>Estrategia de coordinacion entre subagents</td>
+<td>Missing</td>
+<td>Sin planner/scheduler ni merge de resultados</td>
+</tr>
+<tr>
+<td>Memoria persistente de sesion</td>
+<td>Missing</td>
+<td>No persistencia durable de estado operativo</td>
+</tr>
+<tr>
+<td>Memoria de largo plazo (cross-session)</td>
+<td>Missing</td>
+<td>Sin store para decisiones/artefactos historicos</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="12-alineacion-con-harness-engineering">12) Alineacion con Harness Engineering</h2>
+<p>Referencias solicitadas:
+- OpenAI Harness Engineering: <code>https://openai.com/es-ES/index/harness-engineering/</code>
+- Martin Fowler Harness Engineering: <code>https://martinfowler.com/articles/harness-engineering.html</code></p>
+<p>Aplicacion al roadmap de este repo:
+1. Feedforward: <code>AGENTS.md</code> + system prompt + skills operativas.
+2. Feedback loops: sensores de calidad dentro del loop (<code>pytest</code>, <code>ruff</code>, typecheck).
+3. Reliability: memoria persistente + resume/status + observabilidad estructurada.
+4. Safety: sandboxing de tools + boundaries por workspace + politicas verificables.</p>
+<hr />
+<h2 id="13-resumen-ejecutivo">13) Resumen ejecutivo</h2>
+<ul>
+<li>El harness ya cubre el nucleo: <code>CLI + API + loop + providers + tools + permisos + tests</code>.</li>
+<li>Los gaps mas importantes estan en <code>seguridad</code>, <code>observabilidad</code>, <code>self-verification</code> y <code>orquestacion avanzada</code>.</li>
+<li>Prioridad recomendada inmediata:</li>
+<li>Path traversal guards en <code>read_file</code>/<code>write_file</code>.</li>
+<li>Timeout + hardening en <code>bash_terminal</code>.</li>
+<li>Integrar sensores automaticos (<code>pytest</code>, <code>ruff</code>, typecheck) dentro del loop o como paso obligatorio de cierre.</li>
+<li>Implementar <code>/resume</code> + base de memoria de sesion.</li>
+<li>Definir arquitectura base para MCP/Skills/Subagents.</li>
+</ul>
+<hr />
+<h2 id="14-checklist-rapido-de-release">14) Checklist rapido de release</h2>
+<p>Antes de considerar el harness listo para uso mas amplio:</p>
+<ul>
+<li>[ ] Seguridad minima de tools implementada</li>
+<li>[ ] CI completa (lint + test + typecheck)</li>
+<li>[ ] Logging estructurado + session logs</li>
+<li>[ ] AGENTS.md y guias de skills</li>
+<li>[ ] Politica de verificacion automatica antes de declarar exito</li>
+<li>[ ] Slash commands minimos (<code>/help</code>, <code>/status</code>, <code>/resume</code>)</li>
+<li>[ ] MVP de memoria persistente de sesion</li>
+<li>[ ] Plan de integracion MCP y subagents</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": [], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

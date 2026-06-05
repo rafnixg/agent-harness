@@ -1,25 +1,25 @@
-# ARCHITECTURE.md
+# Arquitectura
 
 > Mapa de alto nivel del sistema. Punto de entrada para nuevos contribuidores.
-> Fuente de verdad sobre capas, límites de dominio y decisiones técnicas.
+> Fuente de verdad sobre capas, limites de dominio y decisiones tecnicas.
 
 ---
 
-## Visión general
+## Vision general
 
-Este proyecto es un agente de codificación: envuelve un LLM con un harness para que pueda razonar y actuar sobre herramientas reales.
+Este proyecto es un agente de codificacion: envuelve un LLM con un harness para que pueda razonar y actuar sobre herramientas reales.
 
-```
+```text
 Agent = Model + Harness
 ```
 
-El modelo aporta el razonamiento. El harness aporta ejecución, control y seguridad operativa.
+El modelo aporta el razonamiento. El harness aporta ejecucion, control y seguridad operativa.
 
 ---
 
 ## Capas de la arquitectura
 
-```
+```text
 ┌──────────────────────────────────────────────────────┐
 │                    Entrypoint                        │
 │          app/main.py · app/server.py                │
@@ -44,9 +44,9 @@ El modelo aporta el razonamiento. El harness aporta ejecución, control y seguri
 │ registry.py       │      │ PermissionPolicy            │
 │   └─ ProviderSpec │      │ ├── AlwaysAsk               │
 │                   │      │ ├── AlwaysAllow             │
-│ openai_compat_    │
-│   provider.py     │
-│ antropic_         │
+│ openai_compat_    │      │ ├── AskOnce                 │
+│   provider.py     │      │ └── AllowList               │
+│ antropic_         │      └─────────────────────────────┘
 │   provider.py     │
 └───────────────────┘
 ```
@@ -55,9 +55,9 @@ El modelo aporta el razonamiento. El harness aporta ejecución, control y seguri
 
 ## Estructura de directorios
 
-```
+```text
 .
-├── ARCHITECTURE.md              ← este archivo
+├── ARCHITECTURE.md              ← resumen raiz
 ├── README.md
 ├── TODO.md
 │
@@ -78,30 +78,25 @@ El modelo aporta el razonamiento. El harness aporta ejecución, control y seguri
 │       └── registry.py          ← ProviderSpec + PROVIDERS
 │
 ├── docs-md/                     ← fuente markdown para MkDocs
-│   ├── agent-loop.md
-│   ├── api.md
-│   ├── architecture.md
+│   ├── architecture.md          ← este archivo
 │   ├── introduccion.md
-│   ├── permisos.md
+│   ├── api.md
+│   ├── agent-loop.md
 │   ├── providers.md
 │   ├── tools-basicas.md
+│   ├── permisos.md
 │   └── exec-plans/
 │
 ├── docs/                        ← sitio HTML generado por MkDocs
 │
 └── tests/
-    ├── conftest.py
-    ├── test_agent.py
-    ├── test_main.py
-    ├── test_tool_registry.py
-    └── ...
 ```
 
 ---
 
 ## Componentes clave
 
-### AgentLoop (`app/agent.py`)
+### AgentLoop (app/agent.py)
 
 Implementa el ciclo ReAct y normaliza dos contratos de provider:
 
@@ -110,7 +105,7 @@ Implementa el ciclo ReAct y normaliza dos contratos de provider:
 
 Flujo simplificado:
 
-```
+```text
 run(prompt)
   -> messages = [{"role": "user", "content": prompt}]
   -> for iteration in range(max_iterations):
@@ -122,55 +117,37 @@ run(prompt)
   -> raise RuntimeError("max_iterations reached")
 ```
 
-Limitaciones actuales:
+### Tool System (app/tools/)
 
-- No hay system prompt global
-- No hay gestión avanzada de contexto por ventana de tokens
-- No hay memoria persistente entre ejecuciones
-- La API pública de `AgentLoop` es síncrona (puentea providers async internamente)
+`ToolRegistry.execute` pasa por una politica de permisos antes de ejecutar:
 
-### Tool System (`app/tools/`)
-
-`ToolRegistry.execute` pasa por una política de permisos antes de ejecutar:
-
-```
+```text
 agent loop -> permission policy -> registry.execute
 ```
 
 Tools por defecto:
 
-| Tool | Operación |
-|------|-----------|
+| Tool | Operacion |
+|---|---|
 | `read_file` | Lee archivos |
 | `write_file` | Escribe archivos |
 | `bash_terminal` | Ejecuta shell |
 
-Políticas incluidas:
+### Provider Layer (app/providers/)
 
-| Política | Comportamiento |
-|----------|----------------|
-| `AlwaysAsk` | Pregunta cada vez |
-| `AlwaysAllow` | Auto-ejecuta |
-| `AskOnce` | Pregunta una vez por tool y recuerda |
-| `AllowList{names}` | Auto-ejecuta tools listadas y pregunta el resto |
-
-Advertencia: `bash_terminal` usa `shell=True` y no está sandboxed.
-
-### Provider Layer (`app/providers/`)
-
-Abstrae APIs LLM detrás de `LLMProvider`:
+Abstrae APIs LLM detras de `LLMProvider`:
 
 - `OpenAICompatProvider` para endpoints OpenAI-compatible
 - `AnthropicProvider` para SDK nativo Anthropic
-- `ProviderSpec` (`registry.py`) como metadata de selección y configuración
+- `ProviderSpec` (`registry.py`) como metadata de seleccion y configuracion
 
-`main.py` y `server.py` resuelven provider con `build_llm_provider`, validan configuración y montan `AgentLoop` con `build_tools` + `build_permission_policy`.
+`main.py` y `server.py` montan `AgentLoop` usando `build_llm_provider`, `build_permission_policy` y `build_tools`.
 
 ---
 
 ## Flujo de datos
 
-```
+```text
 CLI: uv run -m app.main -p "prompt" --provider openrouter --permission-policy ask_once
 API: POST /ask (app.server)
       │
@@ -195,35 +172,12 @@ AgentLoop.run(prompt)
 
 ---
 
-## Decisiones de diseño
-
-| Decisión | Razón |
-|----------|-------|
-| OpenAI-compatible como protocolo base | Compatibilidad amplia con gateways y modelos |
-| `AgentLoop` agnóstico al provider | Permite integrar `openai_compat` y `anthropic` sin cambiar el loop |
-| `PermissionPolicy` desacoplada del loop | Control configurable de riesgo por sesión/CLI |
-| Tool como ABC con schema OpenAI | Registro simple y sin configuración manual extra |
-| `max_iterations=40` | Límite duro contra loops infinitos |
-
----
-
-## Lo que este sistema NO es (todavia)
-
-- No tiene sandbox de ejecucion de comandos
-- No tiene memoria persistente entre sesiones
-- No tiene planificacion estructurada dentro del loop
-- No tiene observabilidad avanzada mas alla de logs y stderr
-
-Ver [TODO.md](TODO.md) y [docs-md/exec-plans/PLAN.md](docs-md/exec-plans/PLAN.md) para roadmap.
-
----
-
 ## Referencias
 
-- [Agent Loop](docs-md/agent-loop.md)
-- [API HTTP](docs-md/api.md)
-- [Providers](docs-md/providers.md)
-- [Tools basicas](docs-md/tools-basicas.md)
-- [Permisos](docs-md/permisos.md)
-- [Plan de ejecucion](docs-md/exec-plans/PLAN.md)
-- [TODO](TODO.md)
+- [Introduccion](introduccion.md)
+- [API HTTP](api.md)
+- [Agent Loop](agent-loop.md)
+- [Providers](providers.md)
+- [Tools basicas](tools-basicas.md)
+- [Permisos](permisos.md)
+- [Plan de ejecucion](exec-plans/PLAN.md)

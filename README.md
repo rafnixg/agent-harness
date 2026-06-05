@@ -131,8 +131,9 @@ RUN_LIVE_TESTS=1 uv run -m pytest tests/ -m live
 
 | Documento | Contenido |
 |---|---|
-| [docs/introduccion.md](docs/introduccion.md) | Motivación, tecnologías y estructura del repositorio |
-| [docs/agent-loop.md](docs/agent-loop.md) | Ciclo de razonamiento, soporte multi-provider y ejecución de tools |
-| [docs/providers.md](docs/providers.md) | Capa de proveedores LLM, retry logic y dataclasses |
-| [docs/tools-basicas.md](docs/tools-basicas.md) | Referencia de tools, registry y políticas de permiso |
-| [docs/permisos.md](docs/permisos.md) | Variables de entorno, políticas de permiso y seguridad |
+| [docs-md/introduccion.md](docs-md/introduccion.md) | Motivación, tecnologías y estructura del repositorio |
+| [docs-md/api.md](docs-md/api.md) | Endpoints HTTP (`/health`, `/ask`) y ejemplos de integración |
+| [docs-md/agent-loop.md](docs-md/agent-loop.md) | Ciclo de razonamiento, soporte multi-provider y ejecución de tools |
+| [docs-md/providers.md](docs-md/providers.md) | Capa de proveedores LLM, retry logic y dataclasses |
+| [docs-md/tools-basicas.md](docs-md/tools-basicas.md) | Referencia de tools, registry y políticas de permiso |
+| [docs-md/permisos.md](docs-md/permisos.md) | Variables de entorno, políticas de permiso y seguridad |

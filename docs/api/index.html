@@ -11,10 +11,10 @@
       
       
       
-        <link rel="prev" href="../api/">
+        <link rel="prev" href="../features/">
       
       
-        <link rel="next" href="../providers/">
+        <link rel="next" href="../agent-loop/">
       
       
         
@@ -25,7 +25,7 @@
     
     
       
-        <title>Agent Loop - AI Coding Agent Harness Docs</title>
+        <title>API HTTP - AI Coding Agent Harness Docs</title>
       
     
     
@@ -66,7 +66,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#agent-loop" class="md-skip">
+        <a href="#api-http" class="md-skip">
           Skip to content
         </a>
       
@@ -102,7 +102,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Agent Loop
+              API HTTP
             
           </span>
         </div>
@@ -303,33 +303,6 @@
       
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../api/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    API HTTP
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
     
   
   
@@ -349,7 +322,7 @@
   <span class="md-ellipsis">
     
   
-    Agent Loop
+    API HTTP
   
 
     
@@ -367,7 +340,7 @@
   <span class="md-ellipsis">
     
   
-    Agent Loop
+    API HTTP
   
 
     
@@ -393,22 +366,33 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#clase-agentloop" class="md-nav__link">
+  <a href="#endpoints" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Clase AgentLoop
+        Endpoints
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Clase AgentLoop">
+    <nav class="md-nav" aria-label="Endpoints">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#constructor" class="md-nav__link">
+  <a href="#get-health" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Constructor
+        GET /health
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-ask" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /ask
       
     </span>
   </a>
@@ -421,38 +405,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#flujo-de-ejecucion" class="md-nav__link">
+  <a href="#ejecucion-local" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Flujo de ejecución
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Flujo de ejecución">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#estados-posibles-al-final-de-un-ciclo" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Estados posibles al final de un ciclo
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_chat-llamada-al-llm" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        _chat() — llamada al LLM
+        Ejecucion local
       
     </span>
   </a>
@@ -460,43 +416,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_handle_tool_calls-ejecucion-de-herramientas" class="md-nav__link">
+  <a href="#ejemplos-con-curl" class="md-nav__link">
     <span class="md-ellipsis">
       
-        _handle_tool_calls() — ejecución de herramientas
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#proteccion-contra-bucles-infinitos" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Protección contra bucles infinitos
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#historial-de-mensajes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Historial de mensajes
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#diagrama-de-secuencia" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Diagrama de secuencia
+        Ejemplos con curl
       
     </span>
   </a>
@@ -507,6 +430,33 @@
   
 </nav>
       
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../agent-loop/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Agent Loop
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -619,22 +569,33 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#clase-agentloop" class="md-nav__link">
+  <a href="#endpoints" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Clase AgentLoop
+        Endpoints
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Clase AgentLoop">
+    <nav class="md-nav" aria-label="Endpoints">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#constructor" class="md-nav__link">
+  <a href="#get-health" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Constructor
+        GET /health
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-ask" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /ask
       
     </span>
   </a>
@@ -647,38 +608,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#flujo-de-ejecucion" class="md-nav__link">
+  <a href="#ejecucion-local" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Flujo de ejecución
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Flujo de ejecución">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#estados-posibles-al-final-de-un-ciclo" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Estados posibles al final de un ciclo
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_chat-llamada-al-llm" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        _chat() — llamada al LLM
+        Ejecucion local
       
     </span>
   </a>
@@ -686,43 +619,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_handle_tool_calls-ejecucion-de-herramientas" class="md-nav__link">
+  <a href="#ejemplos-con-curl" class="md-nav__link">
     <span class="md-ellipsis">
       
-        _handle_tool_calls() — ejecución de herramientas
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#proteccion-contra-bucles-infinitos" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Protección contra bucles infinitos
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#historial-de-mensajes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Historial de mensajes
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#diagrama-de-secuencia" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Diagrama de secuencia
+        Ejemplos con curl
       
     </span>
   </a>
@@ -746,135 +646,98 @@
 
 
 
-<h1 id="agent-loop">Agent Loop</h1>
-<p>El <strong>Agent Loop</strong> es el núcleo del sistema. Implementa el patrón <em>ReAct</em> (Reason + Act): el agente razona con el LLM, actúa ejecutando herramientas, observa el resultado y repite hasta obtener una respuesta final.</p>
-<hr />
-<h2 id="clase-agentloop">Clase <code>AgentLoop</code></h2>
-<pre><code>app/agent.py → class AgentLoop
+<h1 id="api-http">API HTTP</h1>
+<p>La API expone el agente por HTTP usando FastAPI.</p>
+<h2 id="endpoints">Endpoints</h2>
+<h3 id="get-health">GET /health</h3>
+<p>Verifica que el servicio este levantado.</p>
+<p>Respuesta:</p>
+<pre><code class="language-json">{&quot;status&quot;: &quot;ok&quot;}
 </code></pre>
-<h3 id="constructor">Constructor</h3>
-<pre><code class="language-python">AgentLoop(
-    llm_provider: Any,           # provider LLM (openai_compat, anthropic, etc.)
-    workspace: Path,             # directorio de trabajo
-    model: str | None = None,    # modelo a usar (default: proveedor decide)
-    max_iterations: int = 40,    # límite de ciclos por ejecución
-    max_tokens: int = 4000,      # tokens máximos por respuesta del LLM
-)
+<h3 id="post-ask">POST /ask</h3>
+<p>Ejecuta una consulta al agente y devuelve su respuesta final.</p>
+<p>Request body:</p>
+<pre><code class="language-json">{
+  &quot;prompt&quot;: &quot;Lee README.md y dame un resumen corto&quot;,
+  &quot;provider&quot;: &quot;openrouter&quot;,
+  &quot;model&quot;: &quot;openrouter/free&quot;,
+  &quot;workspace&quot;: &quot;./workspace&quot;,
+  &quot;permission_policy&quot;: &quot;always_ask&quot;,
+  &quot;allow_tools&quot;: &quot;read_file&quot;
+}
 </code></pre>
-<p>El <code>ToolRegistry</code> se crea vacío en <code>__init__</code>. Las herramientas se registran en <code>agent.tools</code> antes de llamar a <code>run()</code>.</p>
-<p><code>AgentLoop</code> se usa tanto desde CLI (<code>app/main.py</code>) como desde el endpoint HTTP (<code>app/server.py</code>).</p>
-<hr />
-<h2 id="flujo-de-ejecucion">Flujo de ejecución</h2>
-<pre><code>run(prompt)
-│
-├─ messages = [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: prompt}]
-│
-└─ for _iteration in range(max_iterations):
-       │
-    ├─ response = _chat()          ← llamada al LLM (provider-agnostic)
-       │
-    ├─ normaliza respuesta (OpenAI client o LLMResponse)
-    ├─ messages.append(assistant_message)
-    │
-    ├─ if no hay tool_calls:
-    │      return content          ← RESPUESTA FINAL
-    │
-    └─ _handle_tool_calls(tool_calls)
-        │
-        ├─ parse tool name + arguments (JSON)
-        ├─ permission_policy.decide(name, args)
-        ├─ tools.execute(name, **args)
-        └─ messages.append({&quot;role&quot;: &quot;tool&quot;, &quot;content&quot;: result, ...})
-
-raise RuntimeError(&quot;max_iterations reached: 40&quot;)
-</code></pre>
-<h3 id="estados-posibles-al-final-de-un-ciclo">Estados posibles al final de un ciclo</h3>
+<p>Campos:</p>
 <table>
 <thead>
 <tr>
-<th>Estado</th>
-<th>Condición</th>
-<th>Siguiente paso</th>
+<th>Campo</th>
+<th>Requerido</th>
+<th>Default</th>
+<th>Descripcion</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>Respuesta final</strong></td>
-<td><code>message.tool_calls</code> es vacío</td>
-<td>Retorna <code>message.content</code></td>
+<td><code>prompt</code></td>
+<td>Si</td>
+<td>-</td>
+<td>Pregunta/instruccion para el agente</td>
 </tr>
 <tr>
-<td><strong>Tool call</strong></td>
-<td><code>message.tool_calls</code> contiene funciones</td>
-<td>Ejecuta herramientas y continúa</td>
+<td><code>provider</code></td>
+<td>No</td>
+<td><code>LLM_PROVIDER</code> o <code>openrouter</code></td>
+<td>Provider definido en el registro</td>
 </tr>
 <tr>
-<td><strong>Sin choices</strong></td>
-<td><code>response.choices</code> está vacío</td>
-<td><code>RuntimeError</code> inmediato</td>
+<td><code>model</code></td>
+<td>No</td>
+<td><code>OPENROUTER_MODEL</code> o <code>LLM_MODEL</code> o <code>openrouter/free</code></td>
+<td>Modelo a usar</td>
 </tr>
 <tr>
-<td><strong>Límite alcanzado</strong></td>
-<td><code>_iteration == max_iterations - 1</code></td>
-<td><code>RuntimeError</code></td>
+<td><code>workspace</code></td>
+<td>No</td>
+<td><code>WORKSPACE_PATH</code> o <code>./workspace</code></td>
+<td>Directorio de trabajo para tools</td>
+</tr>
+<tr>
+<td><code>permission_policy</code></td>
+<td>No</td>
+<td><code>PERMISSION_POLICY</code> o <code>always_ask</code></td>
+<td>Politica de permisos</td>
+</tr>
+<tr>
+<td><code>allow_tools</code></td>
+<td>No</td>
+<td><code>PERMISSION_ALLOWLIST</code> o <code>""</code></td>
+<td>Lista separada por coma para <code>allow_list</code></td>
 </tr>
 </tbody>
 </table>
-<hr />
-<h2 id="_chat-llamada-al-llm"><code>_chat()</code> — llamada al LLM</h2>
-<pre><code class="language-python">def _chat(self):
-    if provider implementa LLMProvider:
-        return chat_with_retry(...)
-    return openai_client.chat.completions.create(...)
+<p>Respuesta exitosa:</p>
+<pre><code class="language-json">{
+  &quot;result&quot;: &quot;Resumen del archivo...&quot;
+}
 </code></pre>
-<p>El agente soporta ambos contratos:</p>
+<p>Errores:</p>
 <ul>
-<li>providers basados en <code>LLMProvider</code> (<code>chat_with_retry</code>)</li>
-<li>clientes estilo OpenAI (<code>chat.completions.create</code>)</li>
+<li><code>400</code>: configuracion invalida (por ejemplo provider desconocido o API key faltante)</li>
+<li><code>500</code>: error interno no controlado</li>
 </ul>
-<hr />
-<h2 id="_handle_tool_calls-ejecucion-de-herramientas"><code>_handle_tool_calls()</code> — ejecución de herramientas</h2>
-<p>Para cada <code>tool_call</code> en la respuesta:</p>
-<ol>
-<li>Verifica que <code>type == "function"</code> (ignora tipos desconocidos con log a stderr).</li>
-<li>Deserializa <code>function.arguments</code> (JSON).</li>
-<li>Llama a la política de permisos y luego a <code>tools.execute(name, **args)</code>.</li>
-<li>Captura <code>KeyError</code>, <code>FileNotFoundError</code>, <code>ValueError</code>, <code>OSError</code> y los convierte en strings de error (el agente puede recuperarse sin abortar).</li>
-<li>Agrega un mensaje <code>role: tool</code> al historial con el resultado.</li>
-</ol>
-<hr />
-<h2 id="proteccion-contra-bucles-infinitos">Protección contra bucles infinitos</h2>
-<p>La versión original usaba <code>while True:</code> ignorando <code>max_iterations</code>. El bug fue corregido: el loop ahora usa <code>for _iteration in range(self.max_iterations)</code> y lanza <code>RuntimeError</code> al agotar las iteraciones.</p>
-<pre><code class="language-python">for _iteration in range(self.max_iterations):
-    ...
-
-raise RuntimeError(f&quot;max_iterations reached: {self.max_iterations}&quot;)
+<h2 id="ejecucion-local">Ejecucion local</h2>
+<pre><code class="language-bash">uv run -m app.server --host 127.0.0.1 --port 8000
 </code></pre>
-<hr />
-<h2 id="historial-de-mensajes">Historial de mensajes</h2>
-<p>El historial se reinicia completamente en cada llamada a <code>run()</code>:</p>
-<pre><code class="language-python">self.messages = [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: prompt}]
+<h2 id="ejemplos-con-curl">Ejemplos con curl</h2>
+<pre><code class="language-bash">curl http://127.0.0.1:8000/health
 </code></pre>
-<p>Esto significa que <strong>cada invocación es stateless</strong> — el agente no recuerda conversaciones anteriores entre llamadas a <code>run()</code>. Si se necesita memoria entre sesiones, debe pasarse como parte del prompt.</p>
-<hr />
-<h2 id="diagrama-de-secuencia">Diagrama de secuencia</h2>
-<pre><code class="language-mermaid">sequenceDiagram
-    actor User
-    participant Agent as AgentLoop
-    participant LLM
-    participant Policy as PermissionPolicy
-    participant Tool as ToolRegistry
-
-    User-&gt;&gt;Agent: run(&quot;crea un archivo data.txt&quot;)
-    Agent-&gt;&gt;LLM: chat(messages, tools)
-    LLM--&gt;&gt;Agent: tool_call: write_file(...)
-    Agent-&gt;&gt;Policy: decide(&quot;write_file&quot;, args)
-    Policy--&gt;&gt;Agent: allow/ask/deny
-    Agent-&gt;&gt;Tool: execute(&quot;write_file&quot;, ...)
-    Tool--&gt;&gt;Agent: &quot;Successfully wrote to data.txt&quot;
-    Agent-&gt;&gt;LLM: chat(messages + tool result)
-    LLM--&gt;&gt;Agent: &quot;El archivo data.txt fue creado.&quot;
-    Agent--&gt;&gt;User: &quot;El archivo data.txt fue creado.&quot;
+<pre><code class="language-bash">curl -X POST http://127.0.0.1:8000/ask \
+  -H &quot;Content-Type: application/json&quot; \
+  -d '{
+    &quot;prompt&quot;: &quot;Revisa README.md&quot;,
+    &quot;permission_policy&quot;: &quot;allow_list&quot;,
+    &quot;allow_tools&quot;: &quot;read_file&quot;
+  }'
 </code></pre>
 
 

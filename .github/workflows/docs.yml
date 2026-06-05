@@ -5,12 +5,14 @@ on:
     branches:
       - main
     paths:
+      - "docs-md/**"
       - "docs/**"
       - "mkdocs.yml"
       - "pyproject.toml"
       - ".github/workflows/docs.yml"
   pull_request:
     paths:
+      - "docs-md/**"
       - "docs/**"
       - "mkdocs.yml"
       - "pyproject.toml"
