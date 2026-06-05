@@ -13,6 +13,7 @@ import pytest
 from app.agent import AgentLoop
 from app.tools import Tool, ToolRegistry
 from app.tools import ReadFileTool, WriteFileTool, build_tools
+from app.tools.permission_policy import AlwaysAllow
 
 
 # ---------------------------------------------------------------------------
@@ -69,12 +70,14 @@ class _CounterTool(Tool):
 @pytest.mark.integration
 class TestAgentFullLoop:
     def _agent(self, provider, tmp_path, max_iterations=10):
-        return AgentLoop(
+        agent = AgentLoop(
             llm_provider=provider,
             workspace=tmp_path,
             model="test",
             max_iterations=max_iterations,
         )
+        agent.tools = ToolRegistry(permission_policy=AlwaysAllow())
+        return agent
 
     def test_direct_response_no_tools(self, tmp_path):
         """Agent returns immediately when LLM gives a plain text answer."""
@@ -223,7 +226,8 @@ class TestDefaultRegistryInAgent:
             workspace=tmp_path,
             model="test",
         )
-        for tool in build_tools():
+        agent.tools = ToolRegistry(permission_policy=AlwaysAllow())
+        for tool in build_tools(permission_policy=AlwaysAllow()):
             agent.tools.register(tool)
 
         with redirect_stderr(io.StringIO()):

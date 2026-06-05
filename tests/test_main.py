@@ -5,13 +5,10 @@ from unittest.mock import patch
 
 import pytest
 
-from app.main import (
-    _build_llm_provider,
-    _build_permission_policy,
-    _build_provider_config,
-    main,
-)
+from app.main import main
+from app.providers import _build_provider_config, build_llm_provider
 from app.tools import AllowList, AlwaysAllow, AlwaysAsk, AskOnce
+from app.tools import build_permission_policy
 
 
 # ---------------------------------------------------------------------------
@@ -55,35 +52,35 @@ class TestProviderConfigResolution:
 class TestProviderFactory:
     def test_openai_compat_backend_builds_openai_compat_provider(self, monkeypatch):
         monkeypatch.setenv("OPENROUTER_API_KEY", "sk-test")
-        with patch("app.main.OpenAICompatProvider") as mock_provider:
-            _build_llm_provider("openrouter", "openrouter/free")
+        with patch("app.providers.OpenAICompatProvider") as mock_provider:
+            build_llm_provider("openrouter", "openrouter/free")
         assert mock_provider.called
 
     def test_anthropic_backend_builds_anthropic_provider(self, monkeypatch):
         monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-test")
-        with patch("app.main.AnthropicProvider") as mock_provider:
-            _build_llm_provider("anthropic", "claude-sonnet-4-20250514")
+        with patch("app.providers.AnthropicProvider") as mock_provider:
+            build_llm_provider("anthropic", "claude-sonnet-4-20250514")
         assert mock_provider.called
 
 
 class TestPermissionPolicyFactory:
     def test_always_allow(self):
-        assert isinstance(_build_permission_policy("always_allow"), AlwaysAllow)
+        assert isinstance(build_permission_policy("always_allow"), AlwaysAllow)
 
     def test_always_ask(self):
-        assert isinstance(_build_permission_policy("always_ask"), AlwaysAsk)
+        assert isinstance(build_permission_policy("always_ask"), AlwaysAsk)
 
     def test_ask_once(self):
-        assert isinstance(_build_permission_policy("ask_once"), AskOnce)
+        assert isinstance(build_permission_policy("ask_once"), AskOnce)
 
     def test_allow_list(self):
-        policy = _build_permission_policy("allow_list", "read_file, write_file")
+        policy = build_permission_policy("allow_list", "read_file, write_file")
         assert isinstance(policy, AllowList)
         assert policy.names == {"read_file", "write_file"}
 
     def test_invalid_policy_raises(self):
         with pytest.raises(RuntimeError, match="Unknown permission policy"):
-            _build_permission_policy("invalid")
+            build_permission_policy("invalid")
 
 
 # ---------------------------------------------------------------------------
@@ -92,33 +89,33 @@ class TestPermissionPolicyFactory:
 
 class TestMainInvocation:
     def test_prompt_forwarded_to_agent_run(self, monkeypatch, capsys):
-        monkeypatch.setenv("OPENROUTER_API_KEY", "sk-test")
         with patch("sys.argv", ["prog", "-p", "say hello"]):
             with patch("app.main.AgentLoop") as mock_agent:
                 mock_agent.return_value.run.return_value = "Hello!"
-                with patch("app.main.OpenAICompatProvider"):
+                with patch("app.main.build_llm_provider") as mock_build_provider:
+                    mock_build_provider.return_value = object()
                     main()
 
         mock_agent.return_value.run.assert_called_once_with("say hello")
         assert "Hello!" in capsys.readouterr().out
 
     def test_model_arg_passed_to_agent(self, monkeypatch):
-        monkeypatch.setenv("OPENROUTER_API_KEY", "sk-test")
         with patch("sys.argv", ["prog", "-p", "hi", "--model", "custom-model"]):
             with patch("app.main.AgentLoop") as mock_agent:
                 mock_agent.return_value.run.return_value = ""
-                with patch("app.main.OpenAICompatProvider"):
+                with patch("app.main.build_llm_provider") as mock_build_provider:
+                    mock_build_provider.return_value = object()
                     main()
 
         call_kwargs = mock_agent.call_args.kwargs
         assert call_kwargs.get("model") == "custom-model"
 
     def test_workspace_arg_passed_to_agent(self, monkeypatch):
-        monkeypatch.setenv("OPENROUTER_API_KEY", "sk-test")
         with patch("sys.argv", ["prog", "-p", "hi", "--workspace", "/custom/workspace"]):
             with patch("app.main.AgentLoop") as mock_agent:
                 mock_agent.return_value.run.return_value = ""
-                with patch("app.main.OpenAICompatProvider"):
+                with patch("app.main.build_llm_provider") as mock_build_provider:
+                    mock_build_provider.return_value = object()
                     main()
 
         call_kwargs = mock_agent.call_args.kwargs
@@ -127,11 +124,8 @@ class TestMainInvocation:
     def test_provider_arg_affects_client_base_url_env_name(self, monkeypatch):
         monkeypatch.setenv("OPENAI_API_KEY", "sk-openai")
         monkeypatch.setenv("OPENAI_BASE_URL", "https://example.local/v1")
-        with patch("sys.argv", ["prog", "-p", "hi", "--provider", "openai"]):
-            with patch("app.main.AgentLoop") as mock_agent:
-                mock_agent.return_value.run.return_value = "ok"
-                with patch("app.main.OpenAICompatProvider") as mock_openai_compat:
-                    main()
+        with patch("app.providers.OpenAICompatProvider") as mock_openai_compat:
+            build_llm_provider("openai", "openrouter/free")
 
         mock_openai_compat.assert_called_once_with(
             api_key="sk-openai",
@@ -142,11 +136,11 @@ class TestMainInvocation:
 
 
     def test_agent_result_printed_to_stdout(self, monkeypatch, capsys):
-        monkeypatch.setenv("OPENROUTER_API_KEY", "sk-test")
         with patch("sys.argv", ["prog", "-p", "q"]):
             with patch("app.main.AgentLoop") as mock_agent:
                 mock_agent.return_value.run.return_value = "the answer"
-                with patch("app.main.OpenAICompatProvider"):
+                with patch("app.main.build_llm_provider") as mock_build_provider:
+                    mock_build_provider.return_value = object()
                     main()
 
         assert "the answer" in capsys.readouterr().out

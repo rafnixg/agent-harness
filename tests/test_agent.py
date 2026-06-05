@@ -10,6 +10,7 @@ import pytest
 
 from app.agent import AgentLoop
 from app.tools import Tool, ToolRegistry
+from app.tools.permission_policy import AlwaysAllow
 from typing import Any
 
 
@@ -105,6 +106,7 @@ class TestAgentLoopRun:
             workspace=Path("/tmp"),
             model="test-model",
         )
+        self.agent.tools = ToolRegistry(permission_policy=AlwaysAllow())
 
     def test_returns_content_when_no_tool_calls(self):
         self.provider.chat.completions.create.return_value = _make_response(content="Hello!")
@@ -180,6 +182,7 @@ class TestAgentLoopHandleToolCalls:
             workspace=Path("/tmp"),
             model="m",
         )
+        self.agent.tools = ToolRegistry(permission_policy=AlwaysAllow())
 
     def test_unknown_tool_call_type_is_skipped(self):
         tc = MagicMock()
@@ -253,6 +256,7 @@ class TestAgentLoopMaxIterations:
             model="m",
             max_iterations=3,
         )
+        agent.tools = ToolRegistry(permission_policy=AlwaysAllow())
         agent.tools.register(_EchoTool())
         tc = _make_tool_call("echo", {"text": "ping"})
         # LLM always returns a tool call — never a final answer
@@ -271,6 +275,7 @@ class TestAgentLoopMaxIterations:
             model="m",
             max_iterations=4,
         )
+        agent.tools = ToolRegistry(permission_policy=AlwaysAllow())
         counter_tool = _EchoTool()
         agent.tools.register(counter_tool)
         tc = _make_tool_call("echo", {"text": "x"})

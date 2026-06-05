@@ -67,7 +67,7 @@ _GATEWAY_SPEC = ProviderSpec(
     env_key="TEST_GW_API_KEY",
     display_name="Test Gateway",
     is_gateway=True,
-    default_api_base="http://test-gateway",
+    default_base_url="http://test-gateway",
 )
 
 _DIRECT_SPEC = ProviderSpec(
@@ -76,7 +76,7 @@ _DIRECT_SPEC = ProviderSpec(
     env_key="TEST_DIRECT_API_KEY",
     display_name="Test Direct",
     is_gateway=False,
-    default_api_base="http://test-direct",
+    default_base_url="http://test-direct",
 )
 
 
