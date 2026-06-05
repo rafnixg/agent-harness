@@ -23,6 +23,8 @@ Este documento cubre las variables de entorno que controlan el comportamiento de
 | `WORKSPACE_PATH` | `./workspace` | Ruta raíz del directorio de trabajo del agente. |
 | `PERMISSION_POLICY` | `always_ask` | Política de autorización de tools |
 | `PERMISSION_ALLOWLIST` | `""` | Lista de tools separadas por comas para `allow_list` |
+| `API_HOST` | `127.0.0.1` | Host por defecto al ejecutar `uv run -m app.server` |
+| `API_PORT` | `8000` | Puerto por defecto al ejecutar `uv run -m app.server` |
 
 ### Ejemplo de `.env`
 
@@ -57,6 +59,30 @@ uv run -m app.main -p "Revisa README" --permission-policy always_ask
 uv run -m app.main -p "Revisa README" --permission-policy always_allow
 uv run -m app.main -p "Edita un archivo" --permission-policy ask_once
 uv run -m app.main -p "Edita un archivo" --permission-policy allow_list --allow-tools "read_file,write_file"
+```
+
+En API HTTP puedes enviar la política por request (`permission_policy`, `allow_tools`) o dejar que use los defaults de entorno.
+
+---
+
+## Servidor FastAPI
+
+Arranque:
+
+```bash
+uv run -m app.server --host 127.0.0.1 --port 8000
+```
+
+Request de ejemplo:
+
+```bash
+curl -X POST http://127.0.0.1:8000/ask \
+	-H "Content-Type: application/json" \
+	-d '{
+		"prompt": "Revisa README.md",
+		"permission_policy": "allow_list",
+		"allow_tools": "read_file"
+	}'
 ```
 
 ---

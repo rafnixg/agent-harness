@@ -24,6 +24,8 @@ AgentLoop(
 
 El `ToolRegistry` se crea vacío en `__init__`. Las herramientas se registran en `agent.tools` antes de llamar a `run()`.
 
+`AgentLoop` se usa tanto desde CLI (`app/main.py`) como desde el endpoint HTTP (`app/server.py`).
+
 ---
 
 ## Flujo de ejecución

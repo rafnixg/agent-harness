@@ -9,7 +9,7 @@ Las tools son las acciones que el agente puede ejecutar. Cada una encapsula una 
 ### Clase `Tool` (ABC)
 
 ```
-app/tool.py
+app/tools/base.py
 ```
 
 Todo tool hereda de `Tool` e implementa cuatro miembros abstractos:
@@ -48,7 +48,7 @@ El método concreto `to_openai_schema()` convierte el tool al formato que espera
 ### Clase `ToolRegistry`
 
 ```
-app/tool.py
+app/tools/base.py
 ```
 
 Contenedor que almacena tools por nombre y los expone al agente:
@@ -73,7 +73,7 @@ agent loop -> permission policy -> registry.execute
 ### `PermissionPolicy`
 
 ```
-app/tool.py
+app/tools/permission_policy.py
 ```
 
 Interfaz:
@@ -99,7 +99,7 @@ Implementaciones incluidas:
 
 ### `read_file`
 
-**Clase**: `ReadFileTool` (`app/tools.py`)
+**Clase**: `ReadFileTool` (`app/tools/read_file.py`)
 
 Lee y devuelve el contenido completo de un archivo de texto.
 
@@ -129,7 +129,7 @@ Lee y devuelve el contenido completo de un archivo de texto.
 
 ### `write_file`
 
-**Clase**: `WriteFileTool` (`app/tools.py`)
+**Clase**: `WriteFileTool` (`app/tools/write_file.py`)
 
 Escribe contenido a un archivo. Si el archivo no existe lo crea; si existe lo sobreescribe.
 
@@ -163,7 +163,7 @@ Escribe contenido a un archivo. Si el archivo no existe lo crea; si existe lo so
 
 ### `bash_terminal`
 
-**Clase**: `BashTerminalTool` (`app/tools.py`)
+**Clase**: `BashTerminalTool` (`app/tools/bash.py`)
 
 Ejecuta un comando de shell y devuelve su salida estándar.
 
@@ -194,16 +194,16 @@ Ejecuta un comando de shell y devuelve su salida estándar.
 
 ---
 
-## `create_default_registry()`
+## `build_tools()`
 
-Función de conveniencia que devuelve un `ToolRegistry` pre-cargado con los tres tools anteriores.
+A partir del estado actual del proyecto, la función de conveniencia es `build_tools()` y devuelve un `ToolRegistry` pre-cargado con los tres tools anteriores.
 Acepta opcionalmente una `PermissionPolicy`:
 
 ```python
-from app.tools import create_default_registry
-from app.tool import AskOnce
+from app.tools import build_tools
+from app.tools.permission_policy import AskOnce
 
-registry = create_default_registry(permission_policy=AskOnce())
+registry = build_tools(permission_policy=AskOnce())
 # registry tiene: read_file, write_file, bash_terminal
 ```
 
@@ -213,15 +213,15 @@ Usada en `main.py` para configurar el agente por defecto.
 
 ## Crear un tool personalizado
 
-1. Heredar de `Tool` en `app/tools.py` (o en un archivo nuevo).
+1. Heredar de `Tool` en un modulo dentro de `app/tools/` (o en un archivo nuevo).
 2. Implementar `name`, `description`, `parameters` y `execute`.
-3. Registrarlo en `create_default_registry()` o directamente en `agent.tools`.
+3. Registrarlo en `build_tools()` o directamente en `agent.tools`.
 
 **Ejemplo mínimo**
 
 ```python
 from typing import Any
-from app.tool import Tool
+from app.tools.base import Tool
 
 class ListDirectoryTool(Tool):
     @property

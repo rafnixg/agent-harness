@@ -16,6 +16,30 @@ export OPENROUTER_API_KEY="sk-or-..."
 uv run -m app.main -p "Lee README.md y resume su contenido"
 ```
 
+## API HTTP (FastAPI)
+
+Tambien puedes consultar al agente por HTTP.
+
+```bash
+# Levantar servidor
+uv run -m app.server --host 127.0.0.1 --port 8000
+
+# Healthcheck
+curl http://127.0.0.1:8000/health
+
+# Preguntar al agente
+curl -X POST http://127.0.0.1:8000/ask \
+    -H "Content-Type: application/json" \
+    -d '{
+        "prompt": "Lee README.md y dame un resumen corto",
+        "provider": "openrouter",
+        "model": "openrouter/free",
+        "workspace": "./workspace",
+        "permission_policy": "always_ask",
+        "allow_tools": "read_file"
+    }'
+```
+
 ## Configuración
 
 | Variable | Default | Descripción |
@@ -28,6 +52,8 @@ uv run -m app.main -p "Lee README.md y resume su contenido"
 | `WORKSPACE_PATH` | `./workspace` | Directorio de trabajo del agente |
 | `PERMISSION_POLICY` | `always_ask` | Política de permisos (`always_ask`, `always_allow`, `ask_once`, `allow_list`) |
 | `PERMISSION_ALLOWLIST` | `""` | Lista de tools separadas por coma (solo para `allow_list`) |
+| `API_HOST` | `127.0.0.1` | Host por defecto al ejecutar `app.server` |
+| `API_PORT` | `8000` | Puerto por defecto al ejecutar `app.server` |
 
 ## CLI
 
@@ -64,15 +90,20 @@ Opciones principales:
 ```
 app/
 ├── main.py                        # CLI entry point
+├── server.py                      # FastAPI entry point
 ├── agent.py                       # AgentLoop — ciclo principal
-├── tool.py                        # Clases base Tool y ToolRegistry
-├── tools.py                       # read_file, write_file, bash_terminal
+├── tools/
+│   ├── base.py                    # Tool, ToolRegistry
+│   ├── permission_policy.py       # AlwaysAsk, AlwaysAllow, AskOnce, AllowList
+│   ├── read_file.py               # ReadFileTool
+│   ├── write_file.py              # WriteFileTool
+│   └── bash.py                    # BashTerminalTool
 └── providers/
     ├── base.py                    # LLMProvider abstracto + retry logic
     ├── openai_compat_provider.py  # Implementación OpenAI-compatible
     └── registry.py                # ProviderSpec y registro
 docs/                              # Documentación detallada
-tests/                             # Suite de tests (173 tests)
+tests/                             # Suite de tests
 ```
 
 ## Tools disponibles
@@ -87,13 +118,13 @@ tests/                             # Suite de tests (173 tests)
 
 ```bash
 # Todos los tests (excluye live)
-python -m pytest tests/ -v
+uv run -m pytest tests/ -v
 
 # Con reporte de cobertura
-python -m pytest tests/ --cov=app --cov-report=term-missing
+uv run -m pytest tests/ --cov=app --cov-report=term-missing
 
 # Tests live (requiere API key real)
-RUN_LIVE_TESTS=1 python -m pytest tests/ -m live
+RUN_LIVE_TESTS=1 uv run -m pytest tests/ -m live
 ```
 
 ## Documentación

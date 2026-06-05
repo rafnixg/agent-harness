@@ -21,6 +21,7 @@ Este proyecto implementa ese ciclo de forma mínima y legible, sin frameworks ex
 | Python 3.11+ | Lenguaje principal |
 | OpenAI SDK (v2) | Cliente HTTP para APIs compatibles con OpenAI |
 | OpenRouter | Gateway para acceder a múltiples modelos (Claude, GPT, etc.) |
+| FastAPI + Uvicorn | Exposición HTTP del agente (`/health`, `/ask`) |
 | loguru | Logging estructurado |
 | json_repair | Tolerancia a JSON malformado en respuestas del LLM |
 | pytest + pytest-asyncio | Suite de tests |
@@ -56,6 +57,18 @@ uv run -m app.main \
     --allow-tools "read_file,write_file"
 ```
 
+### 4. Ejecutar API HTTP
+
+```bash
+uv run -m app.server --host 127.0.0.1 --port 8000
+```
+
+```bash
+curl -X POST http://127.0.0.1:8000/ask \
+    -H "Content-Type: application/json" \
+    -d '{"prompt":"Resume README.md"}'
+```
+
 ---
 
 ## Estructura del repositorio
@@ -63,9 +76,14 @@ uv run -m app.main \
 ```
 app/
 ├── main.py                        # CLI entry point
+├── server.py                      # FastAPI server
 ├── agent.py                       # AgentLoop — ciclo principal
-├── tool.py                        # Clases base Tool y ToolRegistry
-├── tools.py                       # Implementaciones concretas (read, write, bash)
+├── tools/
+│   ├── base.py                    # Tool y ToolRegistry
+│   ├── permission_policy.py       # Politicas de permisos
+│   ├── read_file.py               # Tool de lectura
+│   ├── write_file.py              # Tool de escritura
+│   └── bash.py                    # Tool de terminal
 └── providers/
     ├── base.py                    # LLMProvider abstracto + retry
     ├── openai_compat_provider.py  # Proveedor OpenAI-compatible
