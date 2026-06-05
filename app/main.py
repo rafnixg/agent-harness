@@ -9,7 +9,7 @@ from app.providers.antropic_provider import AnthropicProvider
 from app.providers.base import LLMProvider
 from app.providers.openai_compat_provider import OpenAICompatProvider
 from app.providers.registry import ProviderSpec, find_by_name
-from app.tool import AllowList, AlwaysAllow, AlwaysAsk, AskOnce, PermissionPolicy
+from app.tools.permission_policy import AllowList, AlwaysAllow, AlwaysAsk, AskOnce, PermissionPolicy
 from app.tools import create_default_registry
 
 

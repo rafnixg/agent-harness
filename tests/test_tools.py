@@ -7,7 +7,7 @@ import tempfile
 import pytest
 
 from app.tools import BashTerminalTool, ReadFileTool, WriteFileTool, create_default_registry
-from app.tool import ToolRegistry
+from app.tools import ToolRegistry
 
 
 # ---------------------------------------------------------------------------

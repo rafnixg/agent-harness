@@ -11,7 +11,7 @@ from unittest.mock import MagicMock
 import pytest
 
 from app.agent import AgentLoop
-from app.tool import Tool, ToolRegistry
+from app.tools import Tool, ToolRegistry
 from app.tools import ReadFileTool, WriteFileTool, create_default_registry
 
 

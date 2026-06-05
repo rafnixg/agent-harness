@@ -11,7 +11,7 @@ from app.main import (
     _build_provider_config,
     main,
 )
-from app.tool import AllowList, AlwaysAllow, AlwaysAsk, AskOnce
+from app.tools.base import AllowList, AlwaysAllow, AlwaysAsk, AskOnce
 
 
 # ---------------------------------------------------------------------------

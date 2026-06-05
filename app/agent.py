@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from app.tool import ToolRegistry
+from app.tools.base import ToolRegistry
 from app.providers.base import LLMProvider, LLMResponse, ToolCallRequest
 
 
