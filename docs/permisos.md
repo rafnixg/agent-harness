@@ -10,15 +10,19 @@ Este documento cubre las variables de entorno que controlan el comportamiento de
 
 | Variable | Descripción |
 |---|---|
-| `OPENROUTER_API_KEY` | API key de [OpenRouter](https://openrouter.ai). El agente lanza `RuntimeError` si no está definida. |
+| `<PROVIDER_API_KEY>` | API key del provider seleccionado (`OPENROUTER_API_KEY`, `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, etc.). |
 
 ### Opcionales
 
 | Variable | Default | Descripción |
 |---|---|---|
+| `LLM_PROVIDER` | `openrouter` | Nombre del provider definido en `app/providers/registry.py` |
+| `LLM_MODEL` | — | Modelo alternativo por defecto (si no se define `OPENROUTER_MODEL`) |
 | `OPENROUTER_BASE_URL` | `https://openrouter.ai/api/v1` | URL base del endpoint compatible con OpenAI. Puede apuntarse a cualquier API local (LM Studio, Ollama, etc.) |
 | `OPENROUTER_MODEL` | `openrouter/free` | Identificador del modelo a usar. Ejemplos: `anthropic/claude-haiku-4.5`, `openai/gpt-4o-mini` |
 | `WORKSPACE_PATH` | `./workspace` | Ruta raíz del directorio de trabajo del agente. |
+| `PERMISSION_POLICY` | `always_ask` | Política de autorización de tools |
+| `PERMISSION_ALLOWLIST` | `""` | Lista de tools separadas por comas para `allow_list` |
 
 ### Ejemplo de `.env`
 
@@ -26,7 +30,33 @@ Este documento cubre las variables de entorno que controlan el comportamiento de
 OPENROUTER_API_KEY=sk-or-v1-xxxxxxxxxxxxxxxx
 OPENROUTER_BASE_URL=https://openrouter.ai/api/v1
 OPENROUTER_MODEL=anthropic/claude-haiku-4.5
+PERMISSION_POLICY=ask_once
+PERMISSION_ALLOWLIST=read_file,write_file
 WORKSPACE_PATH=/home/user/projects/mi-proyecto
+```
+
+---
+
+## Políticas de permisos
+
+Las tool calls pasan por una política de permisos antes de ejecutar:
+
+`agent loop -> permission policy -> registry.execute`
+
+| Política | Comportamiento |
+|---|---|
+| `always_ask` | Pregunta en cada tool call |
+| `always_allow` | Auto-ejecuta todas las tools |
+| `allow_list` | Auto-ejecuta tools listadas y pregunta el resto |
+| `ask_once` | Pregunta la primera vez por cada tool y recuerda la decisión en la sesión |
+
+Ejemplos:
+
+```bash
+uv run -m app.main -p "Revisa README" --permission-policy always_ask
+uv run -m app.main -p "Revisa README" --permission-policy always_allow
+uv run -m app.main -p "Edita un archivo" --permission-policy ask_once
+uv run -m app.main -p "Edita un archivo" --permission-policy allow_list --allow-tools "read_file,write_file"
 ```
 
 ---
@@ -78,6 +108,7 @@ La herramienta `bash_terminal` ejecuta comandos con `subprocess.run(..., shell=T
 
 - **Sin sandbox**: el agente tiene los mismos permisos que el proceso Python.
 - **Sin lista blanca de comandos**: el LLM puede proponer cualquier comando.
+- **La política de permisos reduce riesgo, pero no reemplaza sandbox**: `always_allow` sigue siendo riesgoso en entornos no controlados.
 - **Riesgo en entornos compartidos**: no exponer el agente como servicio público sin sandboxing adicional (Docker, firejail, etc.).
 
 Recomendaciones:

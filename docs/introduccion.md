@@ -34,8 +34,8 @@ Este proyecto implementa ese ciclo de forma mínima y legible, sin frameworks ex
 ```bash
 git clone <repo>
 cd agent-harness
-python -m venv .venv && source .venv/Scripts/activate   # Windows
-pip install -e ".[dev]"
+uv venv
+uv sync --all-extras
 ```
 
 ### 2. Configurar variables de entorno
@@ -43,12 +43,17 @@ pip install -e ".[dev]"
 ```bash
 export OPENROUTER_API_KEY="sk-or-..."
 export OPENROUTER_MODEL="anthropic/claude-haiku-4.5"   # opcional
+export PERMISSION_POLICY="ask_once"                      # opcional
 ```
 
 ### 3. Ejecutar el agente
 
 ```bash
-./your_program.sh -p "Lee el archivo README.md y resume su contenido"
+uv run -m app.main \
+    -p "Lee el archivo README.md y resume su contenido" \
+    --provider openrouter \
+    --permission-policy allow_list \
+    --allow-tools "read_file,write_file"
 ```
 
 ---
@@ -80,7 +85,7 @@ tests/                             # Suite de tests (pytest)
 
 | Sección | Descripción |
 |---|---|
-| [Agent Loop](agent-loop.md) | Cómo funciona el ciclo de razonamiento y uso de herramientas |
+| [Agent Loop](agent-loop.md) | Cómo funciona el ciclo de razonamiento, uso de providers y herramientas |
 | [Providers](providers.md) | Integración con APIs de LLM compatibles con OpenAI |
-| [Tools básicas](tools-basicas.md) | Referencia de `read_file`, `write_file`, `bash_terminal` |
-| [Permisos](permisos.md) | Variables de entorno, seguridad y límites de ejecución |
+| [Tools básicas](tools-basicas.md) | Referencia de `read_file`, `write_file`, `bash_terminal` y `PermissionPolicy` |
+| [Permisos](permisos.md) | Variables de entorno, políticas de permiso, seguridad y límites de ejecución |

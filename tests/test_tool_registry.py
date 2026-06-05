@@ -3,7 +3,7 @@
 import pytest
 from typing import Any
 
-from app.tool import Tool, ToolRegistry
+from app.tool import AllowList, AlwaysAllow, AskOnce, Tool, ToolRegistry
 
 
 # ---------------------------------------------------------------------------
@@ -66,7 +66,7 @@ class TestToolRegistryRegisterAndGet:
 
 class TestToolRegistryExecute:
     def setup_method(self):
-        self.registry = ToolRegistry()
+        self.registry = ToolRegistry(permission_policy=AlwaysAllow())
         self.tool = _SimpleTool(return_value="result")
         self.registry.register(self.tool)
 
@@ -76,6 +76,47 @@ class TestToolRegistryExecute:
     def test_execute_unknown_tool_raises_key_error(self):
         with pytest.raises(KeyError):
             self.registry.execute("ghost", input="x")
+
+
+class TestPermissionPolicies:
+    def test_allow_list_allows_configured_tool_without_prompt(self):
+        registry = ToolRegistry(permission_policy=AllowList(names={"simple_tool"}))
+        registry.register(_SimpleTool(return_value="ok"))
+        assert registry.execute("simple_tool", input="x") == "ok"
+
+    def test_allow_list_prompts_for_non_listed_tool(self, monkeypatch):
+        registry = ToolRegistry(permission_policy=AllowList(names={"read_file"}))
+        registry.register(_SimpleTool(return_value="ok"))
+        monkeypatch.setattr("builtins.input", lambda _: "n")
+        assert registry.execute("simple_tool", input="x") == "Tool execution cancelled by user."
+
+    def test_ask_once_remembers_allow(self, monkeypatch):
+        registry = ToolRegistry(permission_policy=AskOnce())
+        registry.register(_SimpleTool(return_value="ok"))
+        prompt_calls = {"count": 0}
+
+        def _fake_input(_prompt: str) -> str:
+            prompt_calls["count"] += 1
+            return "y"
+
+        monkeypatch.setattr("builtins.input", _fake_input)
+        assert registry.execute("simple_tool", input="a") == "ok"
+        assert registry.execute("simple_tool", input="b") == "ok"
+        assert prompt_calls["count"] == 1
+
+    def test_ask_once_remembers_deny(self, monkeypatch):
+        registry = ToolRegistry(permission_policy=AskOnce())
+        registry.register(_SimpleTool(return_value="ok"))
+        prompt_calls = {"count": 0}
+
+        def _fake_input(_prompt: str) -> str:
+            prompt_calls["count"] += 1
+            return "n"
+
+        monkeypatch.setattr("builtins.input", _fake_input)
+        assert registry.execute("simple_tool", input="a") == "Tool execution cancelled by user."
+        assert registry.execute("simple_tool", input="b") == "Tool execution cancelled by user."
+        assert prompt_calls["count"] == 1
 
 
 class TestToolRegistryLen:

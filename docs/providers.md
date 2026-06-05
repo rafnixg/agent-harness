@@ -9,6 +9,7 @@ La capa de proveedores abstrae la comunicación con APIs de LLM. Permite cambiar
 ```
 LLMProvider (ABC)          ← app/providers/base.py
 └── OpenAICompatProvider   ← app/providers/openai_compat_provider.py
+└── AnthropicProvider      ← app/providers/antropic_provider.py
 ```
 
 ---
@@ -117,7 +118,7 @@ Implementación concreta para cualquier API compatible con el formato de OpenAI:
 ```python
 OpenAICompatProvider(
     api_key: str | None = None,
-    api_base: str | None = None,
+    base_url: str | None = None,
     default_model: str = "gpt-5-mini",
     extra_headers: dict[str, str] | None = None,
     spec: ProviderSpec | None = None,
@@ -163,18 +164,29 @@ app/providers/registry.py
 @dataclass(frozen=True)
 class ProviderSpec:
     name: str
-    base_url: str
-    env_key: str          # nombre de la variable de entorno con la API key
-    gateway: bool = False # True si es un gateway (OpenRouter, etc.)
+    keywords: tuple[str, ...]
+    env_key: str
+    backend: str = "openai_compat"  # openai_compat | anthropic | ...
+    default_base_url: str = ""
+    is_gateway: bool = False
+    is_oauth: bool = False
+    is_direct: bool = False
+    supports_prompt_caching: bool = False
 ```
 
-El registro permite obtener un proveedor configurado por nombre sin pasar parámetros manualmente:
+El registro permite resolver un proveedor por nombre:
 
 ```python
-from app.providers.registry import get_provider
+from app.providers.registry import find_by_name
 
-provider = get_provider("openrouter")
+spec = find_by_name("openrouter")
 ```
+
+`app/main.py` usa este `spec` para:
+
+- validar API key (`spec.env_key`)
+- resolver URL base (`<PROVIDER>_BASE_URL` o `spec.default_base_url`)
+- seleccionar implementación concreta según `spec.backend`
 
 ---
 

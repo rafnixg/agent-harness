@@ -6,24 +6,58 @@ Agente de IA que ejecuta tareas de programación de forma autónoma usando el pa
 
 ```bash
 # 1. Instalar dependencias
-python -m venv .venv && source .venv/Scripts/activate
-pip install -e ".[dev]"
+uv venv
+uv sync --all-extras
 
-# 2. Configurar API key
+# 2. Configurar credenciales (ejemplo OpenRouter)
 export OPENROUTER_API_KEY="sk-or-..."
 
 # 3. Ejecutar
-./your_program.sh -p "Lee README.md y resume su contenido"
+uv run -m app.main -p "Lee README.md y resume su contenido"
 ```
 
 ## Configuración
 
 | Variable | Default | Descripción |
 |---|---|---|
-| `OPENROUTER_API_KEY` | — | **Requerida**. API key de OpenRouter |
+| `OPENROUTER_API_KEY` | — | API key para provider `openrouter` |
 | `OPENROUTER_BASE_URL` | `https://openrouter.ai/api/v1` | Endpoint compatible con OpenAI |
 | `OPENROUTER_MODEL` | `openrouter/free` | Modelo a usar |
+| `LLM_PROVIDER` | `openrouter` | Provider a usar (`openrouter`, `openai`, `anthropic`, etc.) |
+| `LLM_MODEL` | — | Modelo por defecto alternativo (si no se define `OPENROUTER_MODEL`) |
 | `WORKSPACE_PATH` | `./workspace` | Directorio de trabajo del agente |
+| `PERMISSION_POLICY` | `always_ask` | Política de permisos (`always_ask`, `always_allow`, `ask_once`, `allow_list`) |
+| `PERMISSION_ALLOWLIST` | `""` | Lista de tools separadas por coma (solo para `allow_list`) |
+
+## CLI
+
+```bash
+uv run -m app.main \
+    -p "Busca TODOs en el repo" \
+    --provider openrouter \
+    --model openrouter/free \
+    --workspace ./workspace \
+    --permission-policy allow_list \
+    --allow-tools "read_file,write_file"
+```
+
+Opciones principales:
+
+- `-p` prompt de entrada (requerido)
+- `--provider` provider definido en `app/providers/registry.py`
+- `--model` modelo para el provider
+- `--workspace` workspace del agente
+- `--permission-policy` control de ejecución de tools
+- `--allow-tools` allowlist para `allow_list`
+
+## Políticas de permisos
+
+| Política | Comportamiento |
+|---|---|
+| `always_ask` | Pregunta en cada tool call |
+| `always_allow` | Ejecuta sin preguntar |
+| `ask_once` | Pregunta la primera vez por cada tool y recuerda la decisión en la sesión |
+| `allow_list` | Auto-autoriza tools permitidas y pregunta las demás |
 
 ## Estructura del proyecto
 
@@ -67,7 +101,7 @@ RUN_LIVE_TESTS=1 python -m pytest tests/ -m live
 | Documento | Contenido |
 |---|---|
 | [docs/introduccion.md](docs/introduccion.md) | Motivación, tecnologías y estructura del repositorio |
-| [docs/agent-loop.md](docs/agent-loop.md) | Ciclo de razonamiento, flujo de ejecución y diagramas |
+| [docs/agent-loop.md](docs/agent-loop.md) | Ciclo de razonamiento, soporte multi-provider y ejecución de tools |
 | [docs/providers.md](docs/providers.md) | Capa de proveedores LLM, retry logic y dataclasses |
-| [docs/tools-basicas.md](docs/tools-basicas.md) | Referencia de tools y cómo crear tools personalizados |
-| [docs/permisos.md](docs/permisos.md) | Variables de entorno, límites y consideraciones de seguridad |
+| [docs/tools-basicas.md](docs/tools-basicas.md) | Referencia de tools, registry y políticas de permiso |
+| [docs/permisos.md](docs/permisos.md) | Variables de entorno, políticas de permiso y seguridad |

@@ -14,7 +14,7 @@ app/agent.py → class AgentLoop
 
 ```python
 AgentLoop(
-    llm_provider: LLMProvider,   # cliente OpenAI o compatible
+    llm_provider: Any,           # provider LLM (openai_compat, anthropic, etc.)
     workspace: Path,             # directorio de trabajo
     model: str | None = None,    # modelo a usar (default: proveedor decide)
     max_iterations: int = 40,    # límite de ciclos por ejecución
@@ -35,19 +35,20 @@ run(prompt)
 │
 └─ for _iteration in range(max_iterations):
        │
-       ├─ response = _chat()          ← llamada al LLM con messages + tools
+    ├─ response = _chat()          ← llamada al LLM (provider-agnostic)
        │
-       ├─ message = response.choices[0].message
-       ├─ messages.append(message)
-       │
-       ├─ if not message.tool_calls:
-       │      return message.content  ← RESPUESTA FINAL
-       │
-       └─ _handle_tool_calls(message.tool_calls)
-              │
-              ├─ parse tool name + arguments (JSON)
-              ├─ tools.execute(name, **args)
-              └─ messages.append({"role": "tool", "content": result, ...})
+    ├─ normaliza respuesta (OpenAI client o LLMResponse)
+    ├─ messages.append(assistant_message)
+    │
+    ├─ if no hay tool_calls:
+    │      return content          ← RESPUESTA FINAL
+    │
+    └─ _handle_tool_calls(tool_calls)
+        │
+        ├─ parse tool name + arguments (JSON)
+        ├─ permission_policy.decide(name, args)
+        ├─ tools.execute(name, **args)
+        └─ messages.append({"role": "tool", "content": result, ...})
 
 raise RuntimeError("max_iterations reached: 40")
 ```
@@ -67,15 +68,15 @@ raise RuntimeError("max_iterations reached: 40")
 
 ```python
 def _chat(self):
-    return self.llm_provider.chat.completions.create(
-        model=self.model,
-        messages=self.messages,
-        tools=self.tools.to_openai_schema(),
-        max_tokens=self.max_tokens,
-    )
+    if provider implementa LLMProvider:
+        return chat_with_retry(...)
+    return openai_client.chat.completions.create(...)
 ```
 
-Convierte el `ToolRegistry` al formato OpenAI (`{"type": "function", "function": {...}}`) en cada llamada, de modo que el LLM siempre ve las herramientas actuales.
+El agente soporta ambos contratos:
+
+- providers basados en `LLMProvider` (`chat_with_retry`)
+- clientes estilo OpenAI (`chat.completions.create`)
 
 ---
 
@@ -85,7 +86,7 @@ Para cada `tool_call` en la respuesta:
 
 1. Verifica que `type == "function"` (ignora tipos desconocidos con log a stderr).
 2. Deserializa `function.arguments` (JSON).
-3. Llama a `tools.execute(name, **args)`.
+3. Llama a la política de permisos y luego a `tools.execute(name, **args)`.
 4. Captura `KeyError`, `FileNotFoundError`, `ValueError`, `OSError` y los convierte en strings de error (el agente puede recuperarse sin abortar).
 5. Agrega un mensaje `role: tool` al historial con el resultado.
 
@@ -123,11 +124,14 @@ sequenceDiagram
     actor User
     participant Agent as AgentLoop
     participant LLM
+    participant Policy as PermissionPolicy
     participant Tool as ToolRegistry
 
     User->>Agent: run("crea un archivo data.txt")
     Agent->>LLM: chat(messages, tools)
     LLM-->>Agent: tool_call: write_file(...)
+    Agent->>Policy: decide("write_file", args)
+    Policy-->>Agent: allow/ask/deny
     Agent->>Tool: execute("write_file", ...)
     Tool-->>Agent: "Successfully wrote to data.txt"
     Agent->>LLM: chat(messages + tool result)

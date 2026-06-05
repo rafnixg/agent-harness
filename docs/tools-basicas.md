@@ -62,6 +62,37 @@ Contenedor que almacena tools por nombre y los expone al agente:
 | `__len__()` | Número de tools registrados |
 | `__iter__()` | Iteración sobre los tools |
 
+`ToolRegistry` ahora delega decisiones de autorización a `PermissionPolicy`.
+
+Flujo:
+
+```text
+agent loop -> permission policy -> registry.execute
+```
+
+### `PermissionPolicy`
+
+```
+app/tool.py
+```
+
+Interfaz:
+
+```python
+class PermissionPolicy(ABC):
+    def decide(self, name: str, tool_input: dict[str, Any]) -> PermissionDecision:
+        ...  # "allow" | "deny" | "ask"
+```
+
+Implementaciones incluidas:
+
+| Política | Comportamiento |
+|---|---|
+| `AlwaysAsk` | Pregunta en cada tool call |
+| `AlwaysAllow` | Ejecuta sin preguntar |
+| `AllowList(names)` | Permite tools listadas, pregunta el resto |
+| `AskOnce` | Pregunta una vez por tool y recuerda la decisión en la sesión |
+
 ---
 
 ## Tools incluidas
@@ -165,12 +196,14 @@ Ejecuta un comando de shell y devuelve su salida estándar.
 
 ## `create_default_registry()`
 
-Función de conveniencia que devuelve un `ToolRegistry` pre-cargado con los tres tools anteriores:
+Función de conveniencia que devuelve un `ToolRegistry` pre-cargado con los tres tools anteriores.
+Acepta opcionalmente una `PermissionPolicy`:
 
 ```python
 from app.tools import create_default_registry
+from app.tool import AskOnce
 
-registry = create_default_registry()
+registry = create_default_registry(permission_policy=AskOnce())
 # registry tiene: read_file, write_file, bash_terminal
 ```
 

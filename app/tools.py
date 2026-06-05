@@ -3,7 +3,7 @@
 import os
 from typing import Any
 
-from app.tool import Tool, ToolRegistry
+from app.tool import PermissionPolicy, Tool, ToolRegistry
 
 
 class ReadFileTool(Tool):
@@ -107,9 +107,11 @@ class BashTerminalTool(Tool):
         except subprocess.CalledProcessError as e:
             return f"Command failed with error: {e.stderr}"
 
-def create_default_registry() -> ToolRegistry:
+def create_default_registry(
+    permission_policy: PermissionPolicy | None = None,
+) -> ToolRegistry:
     """Create a registry with all default tools."""
-    registry = ToolRegistry()
+    registry = ToolRegistry(permission_policy=permission_policy)
     registry.register(ReadFileTool())
     registry.register(WriteFileTool())
     registry.register(BashTerminalTool())

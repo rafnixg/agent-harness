@@ -5,7 +5,13 @@ from unittest.mock import patch
 
 import pytest
 
-from app.main import _build_llm_provider, _build_provider_config, main
+from app.main import (
+    _build_llm_provider,
+    _build_permission_policy,
+    _build_provider_config,
+    main,
+)
+from app.tool import AllowList, AlwaysAllow, AlwaysAsk, AskOnce
 
 
 # ---------------------------------------------------------------------------
@@ -58,6 +64,26 @@ class TestProviderFactory:
         with patch("app.main.AnthropicProvider") as mock_provider:
             _build_llm_provider("anthropic", "claude-sonnet-4-20250514")
         assert mock_provider.called
+
+
+class TestPermissionPolicyFactory:
+    def test_always_allow(self):
+        assert isinstance(_build_permission_policy("always_allow"), AlwaysAllow)
+
+    def test_always_ask(self):
+        assert isinstance(_build_permission_policy("always_ask"), AlwaysAsk)
+
+    def test_ask_once(self):
+        assert isinstance(_build_permission_policy("ask_once"), AskOnce)
+
+    def test_allow_list(self):
+        policy = _build_permission_policy("allow_list", "read_file, write_file")
+        assert isinstance(policy, AllowList)
+        assert policy.names == {"read_file", "write_file"}
+
+    def test_invalid_policy_raises(self):
+        with pytest.raises(RuntimeError, match="Unknown permission policy"):
+            _build_permission_policy("invalid")
 
 
 # ---------------------------------------------------------------------------
