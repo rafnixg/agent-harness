@@ -1,0 +1,854 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentacion del agente y su arquitectura">
+      
+      
+      
+      
+        <link rel="prev" href="../introduccion/">
+      
+      
+        <link rel="next" href="../providers/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Agent Loop - AI Coding Agent Harness Docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#agent-loop" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="AI Coding Agent Harness Docs" class="md-header__button md-logo" aria-label="AI Coding Agent Harness Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            AI Coding Agent Harness Docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Agent Loop
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="AI Coding Agent Harness Docs" class="md-nav__button md-logo" aria-label="AI Coding Agent Harness Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    AI Coding Agent Harness Docs
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inicio
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../introduccion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduccion
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Agent Loop
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Agent Loop
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#clase-agentloop" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Clase AgentLoop
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Clase AgentLoop">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#constructor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Constructor
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#flujo-de-ejecucion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flujo de ejecución
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Flujo de ejecución">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#estados-posibles-al-final-de-un-ciclo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Estados posibles al final de un ciclo
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_chat-llamada-al-llm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        _chat() — llamada al LLM
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_handle_tool_calls-ejecucion-de-herramientas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        _handle_tool_calls() — ejecución de herramientas
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#proteccion-contra-bucles-infinitos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Protección contra bucles infinitos
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#historial-de-mensajes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Historial de mensajes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#diagrama-de-secuencia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagrama de secuencia
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../providers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Providers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tools-basicas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tools Basicas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../permisos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permisos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#clase-agentloop" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Clase AgentLoop
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Clase AgentLoop">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#constructor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Constructor
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#flujo-de-ejecucion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flujo de ejecución
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Flujo de ejecución">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#estados-posibles-al-final-de-un-ciclo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Estados posibles al final de un ciclo
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_chat-llamada-al-llm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        _chat() — llamada al LLM
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_handle_tool_calls-ejecucion-de-herramientas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        _handle_tool_calls() — ejecución de herramientas
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#proteccion-contra-bucles-infinitos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Protección contra bucles infinitos
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#historial-de-mensajes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Historial de mensajes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#diagrama-de-secuencia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagrama de secuencia
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="agent-loop">Agent Loop</h1>
+<p>El <strong>Agent Loop</strong> es el núcleo del sistema. Implementa el patrón <em>ReAct</em> (Reason + Act): el agente razona con el LLM, actúa ejecutando herramientas, observa el resultado y repite hasta obtener una respuesta final.</p>
+<hr />
+<h2 id="clase-agentloop">Clase <code>AgentLoop</code></h2>
+<pre><code>app/agent.py → class AgentLoop
+</code></pre>
+<h3 id="constructor">Constructor</h3>
+<pre><code class="language-python">AgentLoop(
+    llm_provider: Any,           # provider LLM (openai_compat, anthropic, etc.)
+    workspace: Path,             # directorio de trabajo
+    model: str | None = None,    # modelo a usar (default: proveedor decide)
+    max_iterations: int = 40,    # límite de ciclos por ejecución
+    max_tokens: int = 4000,      # tokens máximos por respuesta del LLM
+)
+</code></pre>
+<p>El <code>ToolRegistry</code> se crea vacío en <code>__init__</code>. Las herramientas se registran en <code>agent.tools</code> antes de llamar a <code>run()</code>.</p>
+<p><code>AgentLoop</code> se usa tanto desde CLI (<code>app/main.py</code>) como desde el endpoint HTTP (<code>app/server.py</code>).</p>
+<hr />
+<h2 id="flujo-de-ejecucion">Flujo de ejecución</h2>
+<pre><code>run(prompt)
+│
+├─ messages = [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: prompt}]
+│
+└─ for _iteration in range(max_iterations):
+       │
+    ├─ response = _chat()          ← llamada al LLM (provider-agnostic)
+       │
+    ├─ normaliza respuesta (OpenAI client o LLMResponse)
+    ├─ messages.append(assistant_message)
+    │
+    ├─ if no hay tool_calls:
+    │      return content          ← RESPUESTA FINAL
+    │
+    └─ _handle_tool_calls(tool_calls)
+        │
+        ├─ parse tool name + arguments (JSON)
+        ├─ permission_policy.decide(name, args)
+        ├─ tools.execute(name, **args)
+        └─ messages.append({&quot;role&quot;: &quot;tool&quot;, &quot;content&quot;: result, ...})
+
+raise RuntimeError(&quot;max_iterations reached: 40&quot;)
+</code></pre>
+<h3 id="estados-posibles-al-final-de-un-ciclo">Estados posibles al final de un ciclo</h3>
+<table>
+<thead>
+<tr>
+<th>Estado</th>
+<th>Condición</th>
+<th>Siguiente paso</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Respuesta final</strong></td>
+<td><code>message.tool_calls</code> es vacío</td>
+<td>Retorna <code>message.content</code></td>
+</tr>
+<tr>
+<td><strong>Tool call</strong></td>
+<td><code>message.tool_calls</code> contiene funciones</td>
+<td>Ejecuta herramientas y continúa</td>
+</tr>
+<tr>
+<td><strong>Sin choices</strong></td>
+<td><code>response.choices</code> está vacío</td>
+<td><code>RuntimeError</code> inmediato</td>
+</tr>
+<tr>
+<td><strong>Límite alcanzado</strong></td>
+<td><code>_iteration == max_iterations - 1</code></td>
+<td><code>RuntimeError</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="_chat-llamada-al-llm"><code>_chat()</code> — llamada al LLM</h2>
+<pre><code class="language-python">def _chat(self):
+    if provider implementa LLMProvider:
+        return chat_with_retry(...)
+    return openai_client.chat.completions.create(...)
+</code></pre>
+<p>El agente soporta ambos contratos:</p>
+<ul>
+<li>providers basados en <code>LLMProvider</code> (<code>chat_with_retry</code>)</li>
+<li>clientes estilo OpenAI (<code>chat.completions.create</code>)</li>
+</ul>
+<hr />
+<h2 id="_handle_tool_calls-ejecucion-de-herramientas"><code>_handle_tool_calls()</code> — ejecución de herramientas</h2>
+<p>Para cada <code>tool_call</code> en la respuesta:</p>
+<ol>
+<li>Verifica que <code>type == "function"</code> (ignora tipos desconocidos con log a stderr).</li>
+<li>Deserializa <code>function.arguments</code> (JSON).</li>
+<li>Llama a la política de permisos y luego a <code>tools.execute(name, **args)</code>.</li>
+<li>Captura <code>KeyError</code>, <code>FileNotFoundError</code>, <code>ValueError</code>, <code>OSError</code> y los convierte en strings de error (el agente puede recuperarse sin abortar).</li>
+<li>Agrega un mensaje <code>role: tool</code> al historial con el resultado.</li>
+</ol>
+<hr />
+<h2 id="proteccion-contra-bucles-infinitos">Protección contra bucles infinitos</h2>
+<p>La versión original usaba <code>while True:</code> ignorando <code>max_iterations</code>. El bug fue corregido: el loop ahora usa <code>for _iteration in range(self.max_iterations)</code> y lanza <code>RuntimeError</code> al agotar las iteraciones.</p>
+<pre><code class="language-python">for _iteration in range(self.max_iterations):
+    ...
+
+raise RuntimeError(f&quot;max_iterations reached: {self.max_iterations}&quot;)
+</code></pre>
+<hr />
+<h2 id="historial-de-mensajes">Historial de mensajes</h2>
+<p>El historial se reinicia completamente en cada llamada a <code>run()</code>:</p>
+<pre><code class="language-python">self.messages = [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: prompt}]
+</code></pre>
+<p>Esto significa que <strong>cada invocación es stateless</strong> — el agente no recuerda conversaciones anteriores entre llamadas a <code>run()</code>. Si se necesita memoria entre sesiones, debe pasarse como parte del prompt.</p>
+<hr />
+<h2 id="diagrama-de-secuencia">Diagrama de secuencia</h2>
+<pre><code class="language-mermaid">sequenceDiagram
+    actor User
+    participant Agent as AgentLoop
+    participant LLM
+    participant Policy as PermissionPolicy
+    participant Tool as ToolRegistry
+
+    User-&gt;&gt;Agent: run(&quot;crea un archivo data.txt&quot;)
+    Agent-&gt;&gt;LLM: chat(messages, tools)
+    LLM--&gt;&gt;Agent: tool_call: write_file(...)
+    Agent-&gt;&gt;Policy: decide(&quot;write_file&quot;, args)
+    Policy--&gt;&gt;Agent: allow/ask/deny
+    Agent-&gt;&gt;Tool: execute(&quot;write_file&quot;, ...)
+    Tool--&gt;&gt;Agent: &quot;Successfully wrote to data.txt&quot;
+    Agent-&gt;&gt;LLM: chat(messages + tool result)
+    LLM--&gt;&gt;Agent: &quot;El archivo data.txt fue creado.&quot;
+    Agent--&gt;&gt;User: &quot;El archivo data.txt fue creado.&quot;
+</code></pre>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": [], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

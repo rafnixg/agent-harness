@@ -1,0 +1,982 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentacion del agente y su arquitectura">
+      
+      
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Plan de Ejecución — Harness Engineering - AI Coding Agent Harness Docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#plan-de-ejecucion-harness-engineering" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="AI Coding Agent Harness Docs" class="md-header__button md-logo" aria-label="AI Coding Agent Harness Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            AI Coding Agent Harness Docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Plan de Ejecución — Harness Engineering
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="AI Coding Agent Harness Docs" class="md-nav__button md-logo" aria-label="AI Coding Agent Harness Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    AI Coding Agent Harness Docs
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inicio
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../introduccion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduccion
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-loop/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Agent Loop
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../providers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Providers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tools-basicas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tools Basicas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../permisos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permisos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#objetivo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Objetivo
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fases
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Fases">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fase-1-seguridad-y-fundamentos-critico" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fase 1 — Seguridad y Fundamentos (CRÍTICO)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fase-2-system-prompt-y-context-feedforward" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fase 2 — System Prompt y Context Feedforward
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fase-3-memoria-y-estado-persistente" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fase 3 — Memoria y Estado Persistente
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fase-4-feedback-sensors-sensores-computacionales" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fase 4 — Feedback Sensors (Sensores Computacionales)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fase-5-context-management-anti-context-rot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fase 5 — Context Management (Anti-Context Rot)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fase-6-arquitectura-y-enforcements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fase 6 — Arquitectura y Enforcements
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fase-7-observabilidad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fase 7 — Observabilidad
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fase-8-multi-agente-y-long-horizon" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fase 8 — Multi-Agente y Long-Horizon
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#decisiones-registradas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Decisiones registradas
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deuda-tecnica-conocida" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Deuda técnica conocida
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#links" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Links
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="plan-de-ejecucion-harness-engineering">Plan de Ejecución — Harness Engineering</h1>
+<blockquote>
+<p>Estado: <strong>ACTIVO</strong>
+Creado: 2026-06-03
+Basado en: OpenAI Harness Engineering, Martin Fowler, LangChain Anatomy, Anthropic Long-Running Agents</p>
+</blockquote>
+<p>Este documento es un artefacto de primera clase. Registra decisiones, progreso y orden de implementación para convertir este agente básico en un harness robusto.</p>
+<hr />
+<h2 id="objetivo">Objetivo</h2>
+<p>Transformar el agente ReAct minimalista actual en un sistema con:
+1. <strong>Feedforward guides</strong> — el agente recibe contexto estructurado antes de actuar
+2. <strong>Feedback sensors</strong> — el sistema detecta y corrige errores automáticamente
+3. <strong>Memoria persistente</strong> — el agente puede trabajar en sesiones largas sin perder contexto
+4. <strong>Seguridad</strong> — ninguna herramienta puede comprometer el host</p>
+<hr />
+<h2 id="fases">Fases</h2>
+<h3 id="fase-1-seguridad-y-fundamentos-critico">Fase 1 — Seguridad y Fundamentos (CRÍTICO)</h3>
+<p><strong>Prioridad: BLOQUEANTE</strong>. El proyecto tiene vulnerabilidades activas que deben resolverse antes de continuar.</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Tarea</th>
+<th>Archivo</th>
+<th>Criterio de éxito</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1.1</td>
+<td>Sandboxear <code>bash_terminal</code> con allowlist de comandos</td>
+<td><code>app/tools.py</code></td>
+<td>Solo ejecuta comandos de la lista permitida; rechaza el resto</td>
+</tr>
+<tr>
+<td>1.2</td>
+<td>Añadir protección path traversal en <code>read_file</code> y <code>write_file</code></td>
+<td><code>app/tools.py</code></td>
+<td>No puede leer/escribir fuera del workspace</td>
+</tr>
+<tr>
+<td>1.3</td>
+<td>Cambiar <code>shell=True</code> → <code>shell=False</code> con lista de argumentos</td>
+<td><code>app/tools.py</code></td>
+<td>Sin inyección de comandos vía shell</td>
+</tr>
+<tr>
+<td>1.4</td>
+<td>Validar que <code>WORKSPACE_PATH</code> existe antes de arrancar</td>
+<td><code>app/main.py</code></td>
+<td>Error claro si el workspace no existe</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Razón:</strong> <code>bash_terminal</code> con <code>shell=True</code> sin sandbox es OWASP A03 (Injection). Un prompt malicioso puede ejecutar cualquier comando en el host.</p>
+<hr />
+<h3 id="fase-2-system-prompt-y-context-feedforward">Fase 2 — System Prompt y Context Feedforward</h3>
+<p>El agente actualmente opera sin instrucciones del sistema. Es el equivalente a contratar a un programador y no decirle nada sobre el proyecto.</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Tarea</th>
+<th>Archivo</th>
+<th>Criterio de éxito</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2.1</td>
+<td>Añadir parámetro <code>system_prompt</code> a <code>AgentLoop</code></td>
+<td><code>app/agent.py</code></td>
+<td>El prompt del sistema se inyecta en <code>messages[0]</code></td>
+</tr>
+<tr>
+<td>2.2</td>
+<td>Crear <code>AGENTS.md</code> como índice de contexto (~100 líneas)</td>
+<td><code>AGENTS.md</code></td>
+<td>El agente puede leerlo al inicio y navegar al contexto relevante</td>
+</tr>
+<tr>
+<td>2.3</td>
+<td>Cargar <code>AGENTS.md</code> automáticamente en el system prompt</td>
+<td><code>app/main.py</code></td>
+<td>Cada sesión empieza con el contexto del repositorio</td>
+</tr>
+<tr>
+<td>2.4</td>
+<td>Crear skill <code>how-to-use-tools</code></td>
+<td><code>docs/skills/</code></td>
+<td>El agente sabe exactamente qué herramientas tiene y cómo usarlas</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inspiración:</strong> OpenAI usa AGENTS.md como índice (~100 líneas), no como enciclopedia. La divulgación progresiva reduce el context rot.</p>
+<hr />
+<h3 id="fase-3-memoria-y-estado-persistente">Fase 3 — Memoria y Estado Persistente</h3>
+<p>Sin memoria, cada sesión empieza desde cero. Para tareas largas, el agente no sabe qué se hizo antes.</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Tarea</th>
+<th>Archivo</th>
+<th>Criterio de éxito</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>3.1</td>
+<td>Crear <code>ProgressTrackerTool</code> para leer/escribir <code>agent-progress.md</code></td>
+<td><code>app/tools.py</code></td>
+<td>El agente puede registrar y leer su propio progreso</td>
+</tr>
+<tr>
+<td>3.2</td>
+<td>Añadir <code>GitTool</code> (status, log, commit, diff)</td>
+<td><code>app/tools.py</code></td>
+<td>El agente hace commits descriptivos al final de cada tarea</td>
+</tr>
+<tr>
+<td>3.3</td>
+<td>Añadir lógica de "get-up-to-speed" al inicio de sesión</td>
+<td><code>app/agent.py</code></td>
+<td>El agente lee git log + progress file antes de actuar</td>
+</tr>
+<tr>
+<td>3.4</td>
+<td>Crear <code>FeatureListTool</code> para leer/actualizar lista de tareas en JSON</td>
+<td><code>app/tools.py</code></td>
+<td>El agente no declara victoria prematuramente</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inspiración:</strong> Anthropic recomienda <code>claude-progress.txt</code> + git log para que cada sesión nueva pueda retomar el trabajo. JSON es más estable que Markdown para que el agente no sobreescriba accidentalmente.</p>
+<hr />
+<h3 id="fase-4-feedback-sensors-sensores-computacionales">Fase 4 — Feedback Sensors (Sensores Computacionales)</h3>
+<p>Los sensores de retroalimentación permiten que el agente detecte y corrija sus errores sin intervención humana.</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Tarea</th>
+<th>Archivo</th>
+<th>Criterio de éxito</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4.1</td>
+<td>Integrar <code>pytest</code> como tool en el loop</td>
+<td><code>app/tools.py</code></td>
+<td>El agente ejecuta tests y ve los resultados directamente</td>
+</tr>
+<tr>
+<td>4.2</td>
+<td>Integrar <code>ruff</code> como linter en el loop</td>
+<td><code>app/tools.py</code></td>
+<td>El agente puede verificar y corregir su propio código</td>
+</tr>
+<tr>
+<td>4.3</td>
+<td>Añadir <code>mypy</code>/<code>pyright</code> como sensor de tipos</td>
+<td><code>app/tools.py</code></td>
+<td>El agente detecta errores de tipos antes de declarar éxito</td>
+</tr>
+<tr>
+<td>4.4</td>
+<td>Crear hook post-ejecución que auto-corre linters</td>
+<td><code>app/agent.py</code></td>
+<td>Los errores de lint se añaden al contexto automáticamente</td>
+</tr>
+<tr>
+<td>4.5</td>
+<td>Mensaje de error de linter incluye instrucciones de remediación</td>
+<td><code>pyproject.toml</code></td>
+<td>Mensajes de error redactados para consumo del agente</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inspiración:</strong> Martin Fowler — los sensores computacionales son baratos, deterministas y deben correr en cada cambio. Los mensajes de error deben incluir instrucciones de corrección (prompt injection positivo).</p>
+<hr />
+<h3 id="fase-5-context-management-anti-context-rot">Fase 5 — Context Management (Anti-Context Rot)</h3>
+<p>Sin gestión del contexto, el agente degrada su rendimiento al llenarse la ventana de contexto.</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Tarea</th>
+<th>Archivo</th>
+<th>Criterio de éxito</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>5.1</td>
+<td>Añadir truncación de outputs de tools &gt; N tokens</td>
+<td><code>app/agent.py</code></td>
+<td>Los outputs largos se truncan y se guarda el full en disco</td>
+</tr>
+<tr>
+<td>5.2</td>
+<td>Implementar compaction básica cuando se acerca el límite</td>
+<td><code>app/agent.py</code></td>
+<td>El agente puede continuar trabajando más allá de 1 context window</td>
+</tr>
+<tr>
+<td>5.3</td>
+<td>Agregar contador de tokens al ciclo del agente</td>
+<td><code>app/agent.py</code></td>
+<td>Visible en logs cuántos tokens se usan por sesión</td>
+</tr>
+<tr>
+<td>5.4</td>
+<td>Implementar Skills (progressive disclosure de tools)</td>
+<td><code>app/tool.py</code></td>
+<td>No todas las tools se cargan en contexto desde el inicio</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inspiración:</strong> LangChain — "context rot" describe cómo el rendimiento degrada al llenarse la ventana. Tool call offloading y compaction son primitivos del harness.</p>
+<hr />
+<h3 id="fase-6-arquitectura-y-enforcements">Fase 6 — Arquitectura y Enforcements</h3>
+<p>Sin enforcement arquitectónico, el agente (o un humano) puede violar las capas del sistema.</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Tarea</th>
+<th>Archivo</th>
+<th>Criterio de éxito</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>6.1</td>
+<td>Arreglar desconexión: <code>main.py</code> debe usar <code>LLMProvider</code> en vez de <code>OpenAI</code> raw</td>
+<td><code>app/main.py</code></td>
+<td>No hay referencias directas al cliente <code>openai</code> fuera de providers/</td>
+</tr>
+<tr>
+<td>6.2</td>
+<td>Añadir tests estructurales de dependencias (ArchUnit-style)</td>
+<td><code>tests/test_architecture.py</code></td>
+<td>CI falla si agent.py importa desde openai directamente</td>
+</tr>
+<tr>
+<td>6.3</td>
+<td>Configurar <code>ruff</code> con reglas de import/boundary</td>
+<td><code>pyproject.toml</code></td>
+<td>Las violaciones de capas se detectan en lint</td>
+</tr>
+<tr>
+<td>6.4</td>
+<td>Async: alinear agent.py para usar <code>await provider.chat()</code></td>
+<td><code>app/agent.py</code></td>
+<td>Sin mezcla sync/async</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="fase-7-observabilidad">Fase 7 — Observabilidad</h3>
+<p>El agente actualmente sólo imprime en stderr. No hay forma de inspeccionar sesiones pasadas.</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Tarea</th>
+<th>Archivo</th>
+<th>Criterio de éxito</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>7.1</td>
+<td>Reemplazar prints con <code>loguru</code> estructurado</td>
+<td><code>app/agent.py</code></td>
+<td>Logs en JSON con campos consistentes</td>
+</tr>
+<tr>
+<td>7.2</td>
+<td>Añadir tracing de tool calls (input, output, duración)</td>
+<td><code>app/agent.py</code></td>
+<td>Cada tool call tiene un trace con timing</td>
+</tr>
+<tr>
+<td>7.3</td>
+<td>Añadir métricas de tokens por sesión</td>
+<td><code>app/agent.py</code></td>
+<td>Visible el costo de cada sesión</td>
+</tr>
+<tr>
+<td>7.4</td>
+<td>Crear <code>session_log.jsonl</code> por sesión</td>
+<td><code>app/agent.py</code></td>
+<td>Reproducible auditar cualquier sesión pasada</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="fase-8-multi-agente-y-long-horizon">Fase 8 — Multi-Agente y Long-Horizon</h3>
+<p>Para tareas complejas que no caben en una sola sesión.</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Tarea</th>
+<th>Archivo</th>
+<th>Criterio de éxito</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>8.1</td>
+<td>Separar <code>InitializerAgent</code> de <code>CodingAgent</code></td>
+<td><code>app/agent.py</code></td>
+<td>La primera sesión configura el entorno; las siguientes hacen progreso incremental</td>
+</tr>
+<tr>
+<td>8.2</td>
+<td>Implementar Ralph Loop (reinyectar prompt al agotar contexto)</td>
+<td><code>app/agent.py</code></td>
+<td>El agente no se detiene cuando se llena el contexto</td>
+</tr>
+<tr>
+<td>8.3</td>
+<td>Añadir spawning de subagentes</td>
+<td><code>app/tools.py</code></td>
+<td>El agente puede delegar subtareas a agentes especializados</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="decisiones-registradas">Decisiones registradas</h2>
+<table>
+<thead>
+<tr>
+<th>Fecha</th>
+<th>Decisión</th>
+<th>Razón</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-06-03</td>
+<td>Fase 1 (seguridad) es BLOQUEANTE para todo lo demás</td>
+<td><code>bash_terminal</code> sin sandbox es un riesgo inaceptable en producción</td>
+</tr>
+<tr>
+<td>2026-06-03</td>
+<td>AGENTS.md como índice, no enciclopedia</td>
+<td>Contexto escaso; demasiada orientación = desorientación (OpenAI)</td>
+</tr>
+<tr>
+<td>2026-06-03</td>
+<td>JSON para feature list en vez de Markdown</td>
+<td>El agente es menos propenso a sobreescribir JSON accidentalmente (Anthropic)</td>
+</tr>
+<tr>
+<td>2026-06-03</td>
+<td>Sensores computacionales antes que inferencial</td>
+<td>Más baratos, deterministas, dan más valor por token (Fowler)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="deuda-tecnica-conocida">Deuda técnica conocida</h2>
+<p>Ver <a href="../TODO.md">TODO.md</a> para la lista completa. Ítems críticos:</p>
+<ul>
+<li>[ ] <code>bash_terminal</code> sin sandbox — OWASP A03</li>
+<li>[ ] Path traversal en read/write file — OWASP A01</li>
+<li>[ ] <code>main.py</code> bypasea la capa de providers</li>
+<li>[ ] Sin system prompt → el agente no tiene instrucciones</li>
+<li>[ ] Sin memoria → cada sesión empieza desde cero</li>
+</ul>
+<hr />
+<h2 id="links">Links</h2>
+<ul>
+<li><a href="../ARCHITECTURE.md">ARCHITECTURE.md</a></li>
+<li><a href="../TODO.md">TODO.md</a></li>
+<li><a href="../docs/agent-loop.md">Agent Loop</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

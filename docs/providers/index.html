@@ -1,0 +1,1062 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentacion del agente y su arquitectura">
+      
+      
+      
+      
+        <link rel="prev" href="../agent-loop/">
+      
+      
+        <link rel="next" href="../tools-basicas/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Providers - AI Coding Agent Harness Docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#providers" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="AI Coding Agent Harness Docs" class="md-header__button md-logo" aria-label="AI Coding Agent Harness Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            AI Coding Agent Harness Docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Providers
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="AI Coding Agent Harness Docs" class="md-nav__button md-logo" aria-label="AI Coding Agent Harness Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    AI Coding Agent Harness Docs
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inicio
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../introduccion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduccion
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../agent-loop/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Agent Loop
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Providers
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Providers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#jerarquia-de-clases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Jerarquía de clases
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#llmprovider-clase-base-abstracta" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LLMProvider — clase base abstracta
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="LLMProvider — clase base abstracta">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#metodo-abstracto-obligatorio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Método abstracto obligatorio
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#metodo-concreto-chat_with_retry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Método concreto: chat_with_retry
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#metodos-estaticos-de-sanitizacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Métodos estáticos de sanitización
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dataclasses-de-respuesta" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dataclasses de respuesta
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Dataclasses de respuesta">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#llmresponse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LLMResponse
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#toolcallrequest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ToolCallRequest
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generationsettings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GenerationSettings
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#openaicompatprovider" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OpenAICompatProvider
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="OpenAICompatProvider">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#constructor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Constructor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#normalizacion-de-tool-ids" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Normalización de tool IDs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sanitizacion-de-mensajes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sanitización de mensajes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#metodos-async" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Métodos async
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#providerspec-y-registro" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ProviderSpec y registro
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usar-un-proveedor-local-ollama-lm-studio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Usar un proveedor local (Ollama / LM Studio)
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tools-basicas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tools Basicas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../permisos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permisos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#jerarquia-de-clases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Jerarquía de clases
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#llmprovider-clase-base-abstracta" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LLMProvider — clase base abstracta
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="LLMProvider — clase base abstracta">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#metodo-abstracto-obligatorio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Método abstracto obligatorio
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#metodo-concreto-chat_with_retry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Método concreto: chat_with_retry
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#metodos-estaticos-de-sanitizacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Métodos estáticos de sanitización
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dataclasses-de-respuesta" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dataclasses de respuesta
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Dataclasses de respuesta">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#llmresponse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LLMResponse
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#toolcallrequest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ToolCallRequest
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generationsettings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GenerationSettings
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#openaicompatprovider" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OpenAICompatProvider
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="OpenAICompatProvider">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#constructor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Constructor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#normalizacion-de-tool-ids" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Normalización de tool IDs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sanitizacion-de-mensajes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sanitización de mensajes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#metodos-async" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Métodos async
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#providerspec-y-registro" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ProviderSpec y registro
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usar-un-proveedor-local-ollama-lm-studio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Usar un proveedor local (Ollama / LM Studio)
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="providers">Providers</h1>
+<p>La capa de proveedores abstrae la comunicación con APIs de LLM. Permite cambiar de modelo o proveedor sin tocar el código del agente.</p>
+<hr />
+<h2 id="jerarquia-de-clases">Jerarquía de clases</h2>
+<pre><code>LLMProvider (ABC)          ← app/providers/base.py
+└── OpenAICompatProvider   ← app/providers/openai_compat_provider.py
+└── AnthropicProvider      ← app/providers/antropic_provider.py
+</code></pre>
+<hr />
+<h2 id="llmprovider-clase-base-abstracta"><code>LLMProvider</code> — clase base abstracta</h2>
+<pre><code>app/providers/base.py
+</code></pre>
+<p>Define la interfaz que todo proveedor debe implementar.</p>
+<h3 id="metodo-abstracto-obligatorio">Método abstracto obligatorio</h3>
+<pre><code class="language-python">@abstractmethod
+async def chat(
+    self,
+    messages: list[dict[str, Any]],
+    model: str,
+    tools: list[dict[str, Any]] | None = None,
+    **kwargs,
+) -&gt; LLMResponse:
+    ...
+</code></pre>
+<h3 id="metodo-concreto-chat_with_retry">Método concreto: <code>chat_with_retry</code></h3>
+<p>Envuelve <code>chat()</code> con lógica de reintentos para errores transitorios:</p>
+<pre><code class="language-python">async def chat_with_retry(self, messages, model, tools=None, **kwargs) -&gt; LLMResponse:
+</code></pre>
+<ul>
+<li>Reintentos: hasta 3 veces con delays <code>[1, 2, 4]</code> segundos.</li>
+<li>Un error es "transitorio" si su representación en string contiene alguno de los marcadores en <code>_TRANSIENT_ERROR_MARKERS</code>.</li>
+<li>Si el error no es transitorio, lanza inmediatamente.</li>
+<li>Si se agotan los 3 reintentos, propaga el último error.</li>
+</ul>
+<h3 id="metodos-estaticos-de-sanitizacion">Métodos estáticos de sanitización</h3>
+<table>
+<thead>
+<tr>
+<th>Método</th>
+<th>Propósito</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>_sanitize_empty_content(messages)</code></td>
+<td>Reemplaza contenido vacío por <code>"(empty)"</code> o <code>None</code> según el rol</td>
+</tr>
+<tr>
+<td><code>_sanitize_request_messages(messages)</code></td>
+<td>Elimina campos internos (<code>_meta</code>) antes de enviar al LLM</td>
+</tr>
+<tr>
+<td><code>_strip_image_content(messages)</code></td>
+<td>Elimina bloques de imagen para proveedores que no los soporten</td>
+</tr>
+<tr>
+<td><code>_is_transient_error(exc)</code></td>
+<td>Devuelve <code>True</code> si la excepción es un error transitorio recuperable</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="dataclasses-de-respuesta">Dataclasses de respuesta</h2>
+<h3 id="llmresponse"><code>LLMResponse</code></h3>
+<pre><code class="language-python">@dataclass
+class LLMResponse:
+    content: str | None
+    tool_calls: list[ToolCallRequest]   # default: []
+    finish_reason: str                  # default: &quot;stop&quot;
+    usage: dict[str, int]               # tokens consumidos
+    reasoning_content: str | None       # DeepSeek-R1, Kimi
+    thinking_blocks: list[dict] | None  # Anthropic extended thinking
+</code></pre>
+<p>Propiedad de conveniencia: <code>has_tool_calls → bool</code>.</p>
+<h3 id="toolcallrequest"><code>ToolCallRequest</code></h3>
+<pre><code class="language-python">@dataclass
+class ToolCallRequest:
+    id: str
+    name: str
+    arguments: dict[str, Any]
+    provider_specific_fields: dict | None
+    function_provider_specific_fields: dict | None
+</code></pre>
+<p>Método <code>to_openai_tool_call()</code> serializa al formato estándar de tool_call de OpenAI.</p>
+<h3 id="generationsettings"><code>GenerationSettings</code></h3>
+<pre><code class="language-python">@dataclass(frozen=True)
+class GenerationSettings:
+    temperature: float = 0.7
+    max_tokens: int = 4096
+    reasoning_effort: str | None = None
+</code></pre>
+<p>Se almacena en <code>provider.generation</code> y aplica como defaults a todas las llamadas.</p>
+<hr />
+<h2 id="openaicompatprovider"><code>OpenAICompatProvider</code></h2>
+<pre><code>app/providers/openai_compat_provider.py
+</code></pre>
+<p>Implementación concreta para cualquier API compatible con el formato de OpenAI: OpenRouter, OpenAI directo, LM Studio, Together AI, etc.</p>
+<h3 id="constructor">Constructor</h3>
+<pre><code class="language-python">OpenAICompatProvider(
+    api_key: str | None = None,
+    base_url: str | None = None,
+    default_model: str = &quot;gpt-5-mini&quot;,
+    extra_headers: dict[str, str] | None = None,
+    spec: ProviderSpec | None = None,
+)
+</code></pre>
+<p>Internamente crea un <code>AsyncOpenAI</code> client.</p>
+<h3 id="normalizacion-de-tool-ids">Normalización de tool IDs</h3>
+<p>Los distintos proveedores tienen restricciones distintas sobre el formato de <code>tool_call_id</code>. El proveedor normaliza automáticamente:</p>
+<ul>
+<li><strong>IDs cortos válidos</strong> (9 caracteres alfanuméricos): se usan tal cual.</li>
+<li><strong>IDs largos o con caracteres especiales</strong>: se reemplazan por un hash SHA-1 truncado a 9 caracteres.</li>
+<li><strong>IDs generados internamente</strong>: 9 caracteres aleatorios alfanuméricos (<code>_short_tool_id()</code>).</li>
+</ul>
+<h3 id="sanitizacion-de-mensajes">Sanitización de mensajes</h3>
+<p><code>_sanitize_messages(messages)</code> filtra cada mensaje para conservar solo las claves permitidas por la API:</p>
+<pre><code class="language-python">_ALLOWED_MSG_KEYS = {&quot;role&quot;, &quot;content&quot;, &quot;tool_calls&quot;, &quot;tool_call_id&quot;, &quot;name&quot;, &quot;reasoning_content&quot;}
+</code></pre>
+<h3 id="metodos-async">Métodos async</h3>
+<table>
+<thead>
+<tr>
+<th>Método</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>async chat(messages, model, tools, **kwargs)</code></td>
+<td>Llamada estándar, retorna <code>LLMResponse</code></td>
+</tr>
+<tr>
+<td><code>async chat_stream(messages, model, tools, **kwargs)</code></td>
+<td>Streaming de chunks, retorna <code>LLMResponse</code> al completar</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="providerspec-y-registro"><code>ProviderSpec</code> y registro</h2>
+<pre><code>app/providers/registry.py
+</code></pre>
+<p><code>ProviderSpec</code> es un dataclass que describe un proveedor:</p>
+<pre><code class="language-python">@dataclass(frozen=True)
+class ProviderSpec:
+    name: str
+    keywords: tuple[str, ...]
+    env_key: str
+    backend: str = &quot;openai_compat&quot;  # openai_compat | anthropic | ...
+    default_base_url: str = &quot;&quot;
+    is_gateway: bool = False
+    is_oauth: bool = False
+    is_direct: bool = False
+    supports_prompt_caching: bool = False
+</code></pre>
+<p>El registro permite resolver un proveedor por nombre:</p>
+<pre><code class="language-python">from app.providers.registry import find_by_name
+
+spec = find_by_name(&quot;openrouter&quot;)
+</code></pre>
+<p><code>app/main.py</code> usa este <code>spec</code> para:</p>
+<ul>
+<li>validar API key (<code>spec.env_key</code>)</li>
+<li>resolver URL base (<code>&lt;PROVIDER&gt;_BASE_URL</code> o <code>spec.default_base_url</code>)</li>
+<li>seleccionar implementación concreta según <code>spec.backend</code></li>
+</ul>
+<hr />
+<h2 id="usar-un-proveedor-local-ollama-lm-studio">Usar un proveedor local (Ollama / LM Studio)</h2>
+<pre><code class="language-bash">OPENROUTER_BASE_URL=http://localhost:11434/v1
+OPENROUTER_API_KEY=ollama
+OPENROUTER_MODEL=llama3
+</code></pre>
+<p>No se requiere ningún cambio en código. El <code>OpenAICompatProvider</code> funciona con cualquier endpoint que respete el formato de OpenAI.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": [], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

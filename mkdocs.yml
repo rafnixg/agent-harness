@@ -2,8 +2,8 @@ site_name: AI Coding Agent Harness Docs
 site_description: Documentacion del agente y su arquitectura
 repo_name: codecrafters-claude-code-python
 
-docs_dir: docs
-site_dir: site
+docs_dir: docs-md
+site_dir: docs
 
 theme:
   name: material
