@@ -8,7 +8,7 @@ from unittest.mock import MagicMock
 import pytest
 
 from app.agent import AgentLoop
-from app.tools.base import ToolRegistry
+from app.tools import ToolRegistry
 
 
 # ---------------------------------------------------------------------------

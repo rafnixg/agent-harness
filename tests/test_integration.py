@@ -12,7 +12,7 @@ import pytest
 
 from app.agent import AgentLoop
 from app.tools import Tool, ToolRegistry
-from app.tools import ReadFileTool, WriteFileTool, create_default_registry
+from app.tools import ReadFileTool, WriteFileTool, build_tools
 
 
 # ---------------------------------------------------------------------------
@@ -199,7 +199,7 @@ class TestAgentFullLoop:
 class TestDefaultRegistryInAgent:
     def test_default_registry_tools_are_invokable(self, tmp_path):
         """Verify all 3 default tools can be found and executed through the agent."""
-        registry = create_default_registry()
+        registry = build_tools()
         # All three tool names should resolve without error
         registry.get("read_file")
         registry.get("write_file")
@@ -223,7 +223,7 @@ class TestDefaultRegistryInAgent:
             workspace=tmp_path,
             model="test",
         )
-        for tool in create_default_registry():
+        for tool in build_tools():
             agent.tools.register(tool)
 
         with redirect_stderr(io.StringIO()):

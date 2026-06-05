@@ -9,7 +9,7 @@ from unittest.mock import MagicMock, call
 import pytest
 
 from app.agent import AgentLoop
-from app.tools.base import Tool, ToolRegistry
+from app.tools import Tool, ToolRegistry
 from typing import Any
 
 

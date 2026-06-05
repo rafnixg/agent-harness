@@ -6,7 +6,7 @@ import tempfile
 
 import pytest
 
-from app.tools import BashTerminalTool, ReadFileTool, WriteFileTool, create_default_registry
+from app.tools import BashTerminalTool, ReadFileTool, WriteFileTool, build_tools
 from app.tools import ToolRegistry
 
 
@@ -172,7 +172,7 @@ class TestBashTerminalTool:
 
 class TestCreateDefaultRegistry:
     def setup_method(self):
-        self.registry = create_default_registry()
+        self.registry = build_tools()
 
     def test_returns_tool_registry(self):
         assert isinstance(self.registry, ToolRegistry)

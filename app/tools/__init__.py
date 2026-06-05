@@ -4,12 +4,12 @@ This module contains the base Tool class, as well as some default tools like Bas
 """
 
 from app.tools.base import ToolRegistry, Tool
-from app.tools.permission_policy import PermissionPolicy
+from app.tools.permission_policy import *
 from app.tools.bash import BashTerminalTool
 from app.tools.read_file import ReadFileTool
 from app.tools.write_file import WriteFileTool
 
-def create_default_registry(
+def build_tools(
     permission_policy: PermissionPolicy | None = None,
 ) -> ToolRegistry:
     """Create a registry with all default tools."""
@@ -18,3 +18,27 @@ def create_default_registry(
     registry.register(WriteFileTool())
     registry.register(BashTerminalTool())
     return registry
+
+
+def build_permission_policy(
+    policy_name: str,
+    allowlist_raw: str | None = None,
+) -> PermissionPolicy:
+    """Build permission policy from cli/env value."""
+    normalized = policy_name.strip().lower().replace("-", "_")
+
+    if normalized == "always_allow":
+        return AlwaysAllow()
+    if normalized == "always_ask":
+        return AlwaysAsk()
+    if normalized == "ask_once":
+        return AskOnce()
+    if normalized == "allow_list":
+        names = {
+            item.strip() for item in (allowlist_raw or "").split(",") if item.strip()
+        }
+        return AllowList(names=names)
+
+    raise RuntimeError(
+        "Unknown permission policy. Use one of: always_ask, always_allow, ask_once, allow_list"
+    )

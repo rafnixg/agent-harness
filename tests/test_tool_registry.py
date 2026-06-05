@@ -3,7 +3,7 @@
 import pytest
 from typing import Any
 
-from app.tools.base import AllowList, AlwaysAllow, AskOnce, Tool, ToolRegistry
+from app.tools import AllowList, AlwaysAllow, AskOnce, Tool, ToolRegistry
 
 
 # ---------------------------------------------------------------------------
