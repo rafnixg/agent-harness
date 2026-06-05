@@ -1,0 +1,17 @@
+site_name: AI Coding Agent Harness Docs
+site_description: Documentacion del agente y su arquitectura
+repo_name: codecrafters-claude-code-python
+
+docs_dir: docs
+site_dir: site
+
+theme:
+  name: material
+
+nav:
+  - Inicio: index.md
+  - Introduccion: introduccion.md
+  - Agent Loop: agent-loop.md
+  - Providers: providers.md
+  - Tools Basicas: tools-basicas.md
+  - Permisos: permisos.md
