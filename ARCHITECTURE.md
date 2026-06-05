@@ -1,53 +1,54 @@
 # ARCHITECTURE.md
 
-> Mapa de alto nivel del sistema. Punto de entrada para agentes y nuevos contribuidores.
-> Fuente de verdad sobre la estructura de capas, límites de dominio y decisiones técnicas clave.
+> Mapa de alto nivel del sistema. Punto de entrada para nuevos contribuidores.
+> Fuente de verdad sobre capas, límites de dominio y decisiones técnicas.
 
 ---
 
 ## Visión general
 
-Este proyecto es un **agente de codificación** — un sistema que envuelve un modelo LLM con un *harness*:
-todo el código, configuración y lógica de ejecución que no es el modelo en sí.
+Este proyecto es un agente de codificación: envuelve un LLM con un harness para que pueda razonar y actuar sobre herramientas reales.
 
 ```
 Agent = Model + Harness
 ```
 
-El modelo contiene la inteligencia. El harness la hace útil.
+El modelo aporta el razonamiento. El harness aporta ejecución, control y seguridad operativa.
 
 ---
 
 ## Capas de la arquitectura
 
 ```
-┌─────────────────────────────────────────────────────┐
-│                    Entrypoint                       │
-│              app/main.py  ·  your_program.sh        │
-└─────────────────────┬───────────────────────────────┘
-                      │
-┌─────────────────────▼───────────────────────────────┐
-│                  Agent Loop                         │
-│                  app/agent.py                       │
-│   Patrón ReAct: Reason → Act → Observe → Repeat     │
-│   max_iterations=40 · max_tokens=4000               │
-└────────┬──────────────────────────┬─────────────────┘
-         │                          │
-┌────────▼────────┐      ┌──────────▼──────────────────┐
-│  LLM Providers  │      │       Tool System            │
-│ app/providers/  │      │  app/tool.py · app/tools.py  │
-│                 │      │                              │
-│ base.py (ABC)   │      │  ToolRegistry                │
-│   └─ LLMProvider│      │  ├── read_file               │
-│   └─ LLMResponse│      │  ├── write_file              │
-│   └─ ToolCallReq│      │  └── bash_terminal           │
-│                 │      │                              │
-│ openai_compat_  │      │  Tool (ABC)                  │
-│   provider.py   │      │  name · description          │
-│ antropic_       │      │  parameters · execute()      │
-│   provider.py   │      └──────────────────────────────┘
-│ registry.py     │
-└─────────────────┘
+┌──────────────────────────────────────────────────────┐
+│                    Entrypoint                        │
+│                     app/main.py                      │
+└──────────────────────┬───────────────────────────────┘
+                       │
+┌──────────────────────▼───────────────────────────────┐
+│                    Agent Loop                        │
+│                    app/agent.py                      │
+│     ReAct: Reason -> Act -> Observe -> Repeat        │
+│     max_iterations=40 · max_tokens=4000              │
+└─────────┬──────────────────────────┬─────────────────┘
+          │                          │
+┌─────────▼─────────┐      ┌─────────▼──────────────────┐
+│   LLM Providers   │      │        Tool System          │
+│  app/providers/   │      │   app/tool.py · app/tools.py│
+│                   │      │                             │
+│ base.py (ABC)     │      │ ToolRegistry                │
+│   └─ LLMProvider  │      │ ├── read_file               │
+│   └─ LLMResponse  │      │ ├── write_file              │
+│   └─ ToolCallReq  │      │ └── bash_terminal           │
+│                   │      │                             │
+│ registry.py       │      │ PermissionPolicy            │
+│   └─ ProviderSpec │      │ ├── AlwaysAsk               │
+│                   │      │ ├── AlwaysAllow             │
+│ openai_compat_    │      │ ├── AskOnce                 │
+│   provider.py     │      │ └── AllowList               │
+│ antropic_         │      └─────────────────────────────┘
+│   provider.py     │
+└───────────────────┘
 ```
 
 ---
@@ -56,20 +57,20 @@ El modelo contiene la inteligencia. El harness la hace útil.
 
 ```
 .
-├── AGENTS.md                    ← [ FALTA ] índice para el agente
 ├── ARCHITECTURE.md              ← este archivo
-├── TODO.md                      ← trabajo pendiente
+├── README.md
+├── TODO.md
 │
 ├── app/
-│   ├── main.py                  ← entrypoint CLI (-p "prompt")
-│   ├── agent.py                 ← AgentLoop (ReAct)
-│   ├── tool.py                  ← Tool ABC + ToolRegistry
-│   ├── tools.py                 ← implementaciones concretas
+│   ├── main.py                  ← CLI + factory de provider + factory de policy
+│   ├── agent.py                 ← AgentLoop (provider-agnostic)
+│   ├── tool.py                  ← Tool ABC + ToolRegistry + PermissionPolicy
+│   ├── tools.py                 ← read/write/bash + create_default_registry
 │   └── providers/
 │       ├── base.py              ← LLMProvider ABC + dataclasses
 │       ├── openai_compat_provider.py
 │       ├── antropic_provider.py
-│       └── registry.py          ← ProviderSpec + PROVIDERS list
+│       └── registry.py          ← ProviderSpec + PROVIDERS
 │
 ├── docs/
 │   ├── agent-loop.md
@@ -77,13 +78,13 @@ El modelo contiene la inteligencia. El harness la hace útil.
 │   ├── permisos.md
 │   ├── providers.md
 │   ├── tools-basicas.md
-│   └── exec-plans/              ← [ FALTA ] planes de ejecución activos
+│   └── exec-plans/
 │
 └── tests/
     ├── conftest.py
     ├── test_agent.py
-    ├── test_tools.py
-    ├── test_providers_base.py
+    ├── test_main.py
+    ├── test_tool_registry.py
     └── ...
 ```
 
@@ -93,69 +94,93 @@ El modelo contiene la inteligencia. El harness la hace útil.
 
 ### AgentLoop (`app/agent.py`)
 
-Núcleo del sistema. Implementa el ciclo ReAct:
+Implementa el ciclo ReAct y normaliza dos contratos de provider:
+
+- `LLMProvider` moderno (async, `chat_with_retry`)
+- cliente legacy estilo OpenAI (`chat.completions.create`)
+
+Flujo simplificado:
 
 ```
 run(prompt)
-  → messages = [{"role": "user", "content": prompt}]
-  → for iteration in range(max_iterations):
-      response = _chat()               # LLM call
-      if not response.tool_calls:
-          return response.content      # DONE
-      _handle_tool_calls(tool_calls)   # execute + append results
-  → raise RuntimeError("max_iterations reached")
+  -> messages = [{"role": "user", "content": prompt}]
+  -> for iteration in range(max_iterations):
+       response = _chat()
+       normalize(response)
+       if no tool_calls:
+           return content
+       _handle_tool_calls(tool_calls)
+  -> raise RuntimeError("max_iterations reached")
 ```
 
-**Limitaciones actuales (ver TODO.md):**
-- No tiene system prompt
-- Sin gestión de contexto (context window overflow no manejado)
-- Sin memoria persistente entre sesiones
-- Síncrono aunque los providers son async
+Limitaciones actuales:
+
+- No hay system prompt global
+- No hay gestión avanzada de contexto por ventana de tokens
+- No hay memoria persistente entre ejecuciones
+- La API pública de `AgentLoop` es síncrona (puentea providers async internamente)
 
 ### Tool System (`app/tool.py`, `app/tools.py`)
 
-Interfaz uniforme para las acciones del agente. Expone schema OpenAI.
+`ToolRegistry.execute` pasa por una política de permisos antes de ejecutar:
+
+```
+agent loop -> permission policy -> registry.execute
+```
+
+Tools por defecto:
 
 | Tool | Operación |
 |------|-----------|
-| `read_file` | Lee archivos del filesystem |
+| `read_file` | Lee archivos |
 | `write_file` | Escribe archivos |
-| `bash_terminal` | Ejecuta comandos de shell |
+| `bash_terminal` | Ejecuta shell |
 
-**Advertencia de seguridad:** `bash_terminal` ejecuta comandos directamente en el host sin sandbox. Ver TODO.md.
+Políticas incluidas:
+
+| Política | Comportamiento |
+|----------|----------------|
+| `AlwaysAsk` | Pregunta cada vez |
+| `AlwaysAllow` | Auto-ejecuta |
+| `AskOnce` | Pregunta una vez por tool y recuerda |
+| `AllowList{names}` | Auto-ejecuta tools listadas y pregunta el resto |
+
+Advertencia: `bash_terminal` usa `shell=True` y no está sandboxed.
 
 ### Provider Layer (`app/providers/`)
 
-Abstrae la comunicación con APIs de LLM detrás de una interfaz unificada.
+Abstrae APIs LLM detrás de `LLMProvider`:
 
-- `LLMProvider` (ABC): `chat()`, `chat_with_retry()`, sanitización de mensajes
-- `OpenAICompatProvider`: cualquier API compatible con OpenAI (OpenRouter, Mistral, etc.)
-- `AnthropicProvider`: SDK nativo de Anthropic (prompt caching, extended thinking)
-- `ProviderRegistry`: metadata de providers, detección automática por key/base URL
+- `OpenAICompatProvider` para endpoints OpenAI-compatible
+- `AnthropicProvider` para SDK nativo Anthropic
+- `ProviderSpec` (`registry.py`) como metadata de selección y configuración
 
-**Desconexión actual:** `main.py` instancia `OpenAI` directamente en lugar de usar `LLMProvider`.
+`main.py` resuelve provider con `find_by_name`, valida credenciales por `env_key`, y crea la implementación concreta según `spec.backend`.
 
 ---
 
 ## Flujo de datos
 
 ```
-CLI: uv run -m app.main -p "prompt"
+CLI: uv run -m app.main -p "prompt" --provider openrouter --permission-policy ask_once
       │
       ▼
-main.py → crea OpenAI client + AgentLoop + registra tools → agent.run(prompt)
+main.py
+  -> _build_llm_provider()
+  -> _build_permission_policy()
+  -> AgentLoop + ToolRegistry
       │
       ▼
 AgentLoop.run(prompt)
       │
-      ├─► _chat() → OpenAI API (vía OpenRouter) → LLMResponse
+      ├─► _chat() -> provider call
       │
-      ├─► [si tool_calls] → ToolRegistry.execute(name, **args)
-      │         ├─► read_file    → filesystem
-      │         ├─► write_file   → filesystem
-      │         └─► bash_terminal → subprocess (host)
+      ├─► [si tool_calls] ToolRegistry.execute(name, **args)
+      │         ├─► PermissionPolicy.decide(name, args)
+      │         ├─► read_file / write_file -> filesystem
+      │         └─► bash_terminal -> subprocess (host)
       │
-      └─► [si no tool_calls] → return content
+      └─► [si no tool_calls] return content
 ```
 
 ---
@@ -164,23 +189,22 @@ AgentLoop.run(prompt)
 
 | Decisión | Razón |
 |----------|-------|
-| OpenAI-compatible como protocolo estándar | Máxima compatibilidad con OpenRouter y providers alternativos |
-| Tool como ABC con schema OpenAI embebido | Registro automático sin configuración manual del schema |
-| `max_iterations=40` como límite duro | Previene bucles infinitos; configurable por instancia |
-| Documentación en `docs/` en español | Proyecto de aprendizaje en español |
+| OpenAI-compatible como protocolo base | Compatibilidad amplia con gateways y modelos |
+| `AgentLoop` agnóstico al provider | Permite integrar `openai_compat` y `anthropic` sin cambiar el loop |
+| `PermissionPolicy` desacoplada del loop | Control configurable de riesgo por sesión/CLI |
+| Tool como ABC con schema OpenAI | Registro simple y sin configuración manual extra |
+| `max_iterations=40` | Límite duro contra loops infinitos |
 
 ---
 
-## Lo que este sistema NO es (todavía)
+## Lo que este sistema NO es (todavia)
 
-- No tiene **sandbox** para ejecución segura de código
-- No tiene **memoria persistente** entre sesiones
-- No tiene **planificación estructurada** (feature list, progress file)
-- No tiene **sensores de retroalimentación** (linters, tests en el loop)
-- No tiene **orquestación multi-agente**
-- No tiene **observabilidad** más allá de prints en stderr
+- No tiene sandbox de ejecucion de comandos
+- No tiene memoria persistente entre sesiones
+- No tiene planificacion estructurada dentro del loop
+- No tiene observabilidad avanzada mas alla de logs y stderr
 
-Ver [TODO.md](./TODO.md) y [docs/exec-plans/PLAN.md](./docs/exec-plans/PLAN.md) para el roadmap completo.
+Ver [TODO.md](TODO.md) y [docs/exec-plans/PLAN.md](docs/exec-plans/PLAN.md) para roadmap.
 
 ---
 
@@ -188,6 +212,7 @@ Ver [TODO.md](./TODO.md) y [docs/exec-plans/PLAN.md](./docs/exec-plans/PLAN.md) 
 
 - [Agent Loop](docs/agent-loop.md)
 - [Providers](docs/providers.md)
-- [Tools básicas](docs/tools-basicas.md)
-- [Plan de ejecución](docs/exec-plans/PLAN.md)
+- [Tools basicas](docs/tools-basicas.md)
+- [Permisos](docs/permisos.md)
+- [Plan de ejecucion](docs/exec-plans/PLAN.md)
 - [TODO](TODO.md)
